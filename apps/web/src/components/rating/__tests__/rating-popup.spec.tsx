@@ -54,14 +54,14 @@ describe('RatingPopup', () => {
     expect(getPopup()).toHaveAttribute('aria-hidden', 'true')
   })
 
-  it('should show popup after 5 seconds on first load', async () => {
+  it('should show popup after 3 seconds on first load', async () => {
     render(<RatingPopup userId="user-1" />)
 
     await waitFor(() => {
       expect(mockGetUserRating).toHaveBeenCalled()
     })
 
-    vi.advanceTimersByTime(5_000)
+    vi.advanceTimersByTime(3_000)
 
     await waitFor(() => {
       expect(getPopup()).toHaveAttribute('aria-hidden', 'false')
@@ -83,12 +83,12 @@ describe('RatingPopup', () => {
       expect(mockGetUserRating).toHaveBeenCalled()
     })
 
-    vi.advanceTimersByTime(5_000)
+    vi.advanceTimersByTime(3_000)
 
     expect(screen.queryByTestId('rating-popup')).not.toBeInTheDocument()
   })
 
-  it('should reopen after 60 seconds when closed without rating', async () => {
+  it('should reopen after 10 minutes when closed without rating', async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
 
     render(<RatingPopup userId="user-1" />)
@@ -97,7 +97,7 @@ describe('RatingPopup', () => {
       expect(mockGetUserRating).toHaveBeenCalled()
     })
 
-    vi.advanceTimersByTime(5_000)
+    vi.advanceTimersByTime(3_000)
 
     await waitFor(() => {
       expect(getPopup()).toHaveAttribute('aria-hidden', 'false')
@@ -107,7 +107,7 @@ describe('RatingPopup', () => {
 
     expect(getPopup()).toHaveAttribute('aria-hidden', 'true')
 
-    vi.advanceTimersByTime(60_000)
+    vi.advanceTimersByTime(600_000)
 
     await waitFor(() => {
       expect(getPopup()).toHaveAttribute('aria-hidden', 'false')
@@ -121,7 +121,7 @@ describe('RatingPopup', () => {
       expect(mockGetUserRating).toHaveBeenCalled()
     })
 
-    vi.advanceTimersByTime(5_000)
+    vi.advanceTimersByTime(3_000)
 
     await waitFor(() => {
       expect(screen.getByText('Sua avaliação')).toBeInTheDocument()
@@ -139,7 +139,7 @@ describe('RatingPopup', () => {
       expect(mockGetUserRating).toHaveBeenCalled()
     })
 
-    vi.advanceTimersByTime(5_000)
+    vi.advanceTimersByTime(3_000)
 
     await waitFor(() => {
       expect(getPopup()).toHaveAttribute('aria-hidden', 'false')
