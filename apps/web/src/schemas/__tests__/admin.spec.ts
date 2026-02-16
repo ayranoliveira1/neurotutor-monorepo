@@ -11,7 +11,7 @@ describe('adminCreateUserSchema', () => {
     const result = adminCreateUserSchema.safeParse({
       name: 'João Silva',
       email: 'joao@email.com',
-      password: '123456',
+      password: '12345678',
       planSlug: 'pro',
       durationDays: 30,
     })
@@ -22,7 +22,7 @@ describe('adminCreateUserSchema', () => {
     const result = adminCreateUserSchema.safeParse({
       name: 'João Silva',
       email: 'joao@email.com',
-      password: '123456',
+      password: '12345678',
       planSlug: 'pro',
       durationDays: 30,
       role: 'ADMIN',
@@ -34,7 +34,7 @@ describe('adminCreateUserSchema', () => {
     const result = adminCreateUserSchema.safeParse({
       name: '',
       email: 'joao@email.com',
-      password: '123456',
+      password: '12345678',
       planSlug: 'pro',
       durationDays: 30,
     })
@@ -45,7 +45,7 @@ describe('adminCreateUserSchema', () => {
     const result = adminCreateUserSchema.safeParse({
       name: 'João Silva',
       email: 'invalid',
-      password: '123456',
+      password: '12345678',
       planSlug: 'pro',
       durationDays: 30,
     })
@@ -67,7 +67,7 @@ describe('adminCreateUserSchema', () => {
     const result = adminCreateUserSchema.safeParse({
       name: 'João Silva',
       email: 'joao@email.com',
-      password: '123456',
+      password: '12345678',
       planSlug: '',
       durationDays: 30,
     })
@@ -78,7 +78,7 @@ describe('adminCreateUserSchema', () => {
     const result = adminCreateUserSchema.safeParse({
       name: 'João Silva',
       email: 'joao@email.com',
-      password: '123456',
+      password: '12345678',
       planSlug: 'pro',
       durationDays: 0,
     })
@@ -89,7 +89,7 @@ describe('adminCreateUserSchema', () => {
     const result = adminCreateUserSchema.safeParse({
       name: 'João Silva',
       email: 'joao@email.com',
-      password: '123456',
+      password: '12345678',
       planSlug: 'pro',
       durationDays: 30,
       role: 'INVALID',
@@ -101,7 +101,7 @@ describe('adminCreateUserSchema', () => {
     const result = adminCreateUserSchema.safeParse({
       name: 'João Silva',
       email: 'joao@email.com',
-      password: '123456',
+      password: '12345678',
       planSlug: 'pro',
       durationDays: '30',
     })

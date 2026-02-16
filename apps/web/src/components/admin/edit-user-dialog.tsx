@@ -83,6 +83,11 @@ export function EditUserDialog({
     .filter((p) => p.active)
     .map((p) => ({ value: p.id, label: p.name }))
 
+  function handleOpenChange(open: boolean) {
+    if (!open) form.reset()
+    onOpenChange(open)
+  }
+
   useEffect(() => {
     if (user && open) {
       reset({
@@ -100,7 +105,7 @@ export function EditUserDialog({
   }, [user, open, reset])
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Editar usuário</DialogTitle>
@@ -211,7 +216,7 @@ export function EditUserDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={() => handleOpenChange(false)}
             >
               Cancelar
             </Button>

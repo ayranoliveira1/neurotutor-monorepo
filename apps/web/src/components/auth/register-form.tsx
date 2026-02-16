@@ -1,18 +1,18 @@
 'use client'
 
-import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks'
+import { useForm, type UseFormRegister, type FieldErrors } from 'react-hook-form'
+import { useAction } from 'next-safe-action/hooks'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { type UseFormRegister, type FieldErrors } from 'react-hook-form'
 
-import { type SignUpInput, signUpSchema } from '@/schemas/auth'
+import { type SignUpFormInput, signUpFormSchema } from '@/schemas/auth'
 import { signUpAction } from '@/actions/auth/sign-up'
 import { AuthFormField } from './auth-form-field'
 import { SubmitButton } from './submit-button'
 
 export interface RegisterFormViewProps {
   onSubmit: (e?: React.BaseSyntheticEvent) => void
-  register: UseFormRegister<SignUpInput>
-  errors: FieldErrors<SignUpInput>
+  register: UseFormRegister<SignUpFormInput>
+  errors: FieldErrors<SignUpFormInput>
   isPending: boolean
   serverError?: string
 }
@@ -53,6 +53,15 @@ export function RegisterFormView({
         registration={register('password')}
       />
 
+      <AuthFormField
+        id="confirmPassword"
+        label="Confirmar senha"
+        type="password"
+        placeholder="********"
+        error={errors.confirmPassword?.message}
+        registration={register('confirmPassword')}
+      />
+
       {serverError && (
         <p className="text-sm text-destructive">{serverError}</p>
       )}
@@ -67,27 +76,29 @@ export function RegisterFormView({
 }
 
 export function RegisterForm() {
-  const { form, handleSubmitWithAction, action } = useHookFormAction(
-    signUpAction,
-    zodResolver(signUpSchema),
-    {
-      formProps: {
-        defaultValues: {
-          name: '',
-          email: '',
-          password: '',
-        },
-      },
+  const form = useForm<SignUpFormInput>({
+    resolver: zodResolver(signUpFormSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
-  )
+  })
+
+  const { execute, result, isPending } = useAction(signUpAction)
+
+  const onSubmit = form.handleSubmit(({ confirmPassword: _, ...data }) => {
+    execute(data)
+  })
 
   return (
     <RegisterFormView
-      onSubmit={handleSubmitWithAction}
+      onSubmit={onSubmit}
       register={form.register}
       errors={form.formState.errors}
-      isPending={action.isPending}
-      serverError={action.result?.serverError}
+      isPending={isPending}
+      serverError={result?.serverError}
     />
   )
 }

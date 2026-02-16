@@ -26,7 +26,6 @@ interface CreateUserDialogProps {
 }
 
 const roleOptions = [
-  { value: '', label: 'Padrão (Aluno)' },
   { value: 'STUDENT', label: 'Aluno' },
   { value: 'TEACHER', label: 'Professor' },
   { value: 'ADMIN', label: 'Admin' },
@@ -49,7 +48,7 @@ export function CreateUserDialog({
           password: '',
           planSlug: '',
           durationDays: 30,
-          role: undefined,
+          role: 'STUDENT',
         },
       },
       actionProps: {
@@ -62,14 +61,22 @@ export function CreateUserDialog({
     }
   )
 
-  const { register, formState: { errors } } = form
+  const {
+    register,
+    formState: { errors },
+  } = form
 
   const planOptions = plans
     .filter((p) => p.active)
     .map((p) => ({ value: p.slug, label: p.name }))
 
+  function handleOpenChange(open: boolean) {
+    if (!open) form.reset()
+    onOpenChange(open)
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Criar usuário</DialogTitle>
@@ -94,7 +101,6 @@ export function CreateUserDialog({
             <Label htmlFor="create-email">E-mail</Label>
             <Input
               id="create-email"
-              type="email"
               placeholder="usuario@email.com"
               {...register('email')}
             />
@@ -108,7 +114,7 @@ export function CreateUserDialog({
             <Input
               id="create-password"
               type="password"
-              placeholder="Mínimo 6 caracteres"
+              placeholder="Mínimo 8 caracteres"
               {...register('password')}
             />
             {errors.password && (
@@ -173,7 +179,7 @@ export function CreateUserDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={() => handleOpenChange(false)}
             >
               Cancelar
             </Button>

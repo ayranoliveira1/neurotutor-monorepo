@@ -24,3 +24,14 @@ export const signUpSchema = z.object({
 })
 
 export type SignUpInput = z.infer<typeof signUpSchema>
+
+export const signUpFormSchema = signUpSchema
+  .extend({
+    confirmPassword: z.string().min(1, 'Confirmação de senha é obrigatória'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'As senhas não coincidem',
+    path: ['confirmPassword'],
+  })
+
+export type SignUpFormInput = z.infer<typeof signUpFormSchema>
