@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Plus, AlertCircle, Loader2 } from 'lucide-react'
+import { Plus, AlertCircle } from 'lucide-react'
 import type { AdminUser } from '@/actions/admin/list-users'
 import { useUsersQuery } from '@/hooks/admin/use-users-query'
 import { usePlansQuery } from '@/hooks/admin/use-plans-query'
@@ -15,6 +15,7 @@ import { UsersPagination } from './users-pagination'
 import { CreateUserDialog } from './create-user-dialog'
 import { EditUserDialog } from './edit-user-dialog'
 import { DeleteUserDialog } from './delete-user-dialog'
+import { UsersPageSkeleton } from './users-page-skeleton'
 
 export function UsersPageContent() {
   const searchParams = useSearchParams()
@@ -64,11 +65,7 @@ export function UsersPageContent() {
   }
 
   if (usersQuery.isLoading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <UsersPageSkeleton />
   }
 
   if (usersQuery.isError) {
