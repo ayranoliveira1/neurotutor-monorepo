@@ -23,10 +23,11 @@ export function RatingsPagination({
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', String(page))
     router.push(`${pathname}?${params.toString()}`)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-between">
       <p className="text-sm text-muted-foreground">
         {totalItems} avaliação{totalItems !== 1 ? 'ões' : ''} encontrada
         {totalItems !== 1 ? 's' : ''}
