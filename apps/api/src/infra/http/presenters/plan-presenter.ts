@@ -14,4 +14,11 @@ export class PlanPresenter {
       updatedAt: plan.updatedAt,
     }
   }
+
+  static toAdminHTTP(plan: Plan, canDelete: boolean) {
+    return {
+      ...PlanPresenter.toHTTP(plan),
+      canDelete,
+    }
+  }
 }
