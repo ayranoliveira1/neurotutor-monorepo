@@ -34,3 +34,39 @@ export const adminUpdateUserSchema = z.object({
 })
 
 export type AdminUpdateUserInput = z.infer<typeof adminUpdateUserSchema>
+
+export const adminCreatePlanSchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Nome é obrigatório')
+    .min(3, 'Nome deve ter no mínimo 3 caracteres'),
+  slug: z
+    .string()
+    .min(1, 'Slug é obrigatório')
+    .min(2, 'Slug deve ter no mínimo 2 caracteres'),
+  priceCents: z.coerce
+    .number({ invalid_type_error: 'Preço é obrigatório' })
+    .min(0, 'Preço deve ser positivo'),
+  description: z.string().optional(),
+  cycle: z.enum(['WEEKLY', 'MONTHLY', 'YEARLY']).default('MONTHLY'),
+})
+
+export type AdminCreatePlanInput = z.infer<typeof adminCreatePlanSchema>
+
+export const adminUpdatePlanSchema = z.object({
+  id: z.string().min(1),
+  name: z
+    .string()
+    .min(3, 'Nome deve ter no mínimo 3 caracteres')
+    .optional(),
+  slug: z
+    .string()
+    .min(2, 'Slug deve ter no mínimo 2 caracteres')
+    .optional(),
+  priceCents: z.coerce.number().min(0, 'Preço deve ser positivo').optional(),
+  description: z.string().optional(),
+  cycle: z.enum(['WEEKLY', 'MONTHLY', 'YEARLY']).optional(),
+  active: z.enum(['true', 'false']).optional(),
+})
+
+export type AdminUpdatePlanInput = z.infer<typeof adminUpdatePlanSchema>

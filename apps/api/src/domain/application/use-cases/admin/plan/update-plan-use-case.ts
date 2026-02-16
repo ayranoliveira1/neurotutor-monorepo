@@ -3,6 +3,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { Plan, BillingCycle } from '@/domain/entreprise/entities/plan'
 import { PlansRepository } from '../../../repositories/plans-repository'
+import { subscriptionsRepository } from '../../../repositories/subscriptions-repository'
 import { Injectable } from '@nestjs/common'
 
 interface UpdatePlanUseCaseRequest {
@@ -23,7 +24,10 @@ type UpdatePlanUseCaseResponse = Either<
 
 @Injectable()
 export class UpdatePlanUseCase {
-  constructor(private plansRepository: PlansRepository) {}
+  constructor(
+    private plansRepository: PlansRepository,
+    private subscriptionsRepository: subscriptionsRepository,
+  ) {}
 
   async execute({
     planId,
@@ -44,7 +48,7 @@ export class UpdatePlanUseCase {
               message: 'Plano não encontrado.',
             },
           ],
-        })
+        }),
       )
     }
 
@@ -62,10 +66,12 @@ export class UpdatePlanUseCase {
                 code: 'SLUG_IN_USE',
               },
             ],
-          })
+          }),
         )
       }
     }
+
+    const originalName = plan.name
 
     plan.name = name ?? plan.name
     plan.slug = slug ?? plan.slug
@@ -75,6 +81,13 @@ export class UpdatePlanUseCase {
     plan.active = active ?? plan.active
 
     await this.plansRepository.save(plan)
+
+    if (name && name !== originalName) {
+      await this.subscriptionsRepository.updatePlanNameByPlanId(
+        planId,
+        name,
+      )
+    }
 
     return right({ plan })
   }

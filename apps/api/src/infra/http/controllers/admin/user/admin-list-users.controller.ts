@@ -10,14 +10,14 @@ import z from 'zod'
 
 const AdminListUsersSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  perPage: z.coerce.number().int().min(1).max(100).default(20),
+  perPage: z.coerce.number().int().min(1).max(100).default(10),
   search: z.string().optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
   role: z.nativeEnum(Role).optional(),
   active: z.preprocess(
     (v) => (v === 'true' ? true : v === 'false' ? false : undefined),
-    z.boolean().optional(),
+    z.boolean().optional()
   ),
   planId: z.string().min(1).optional(),
 })

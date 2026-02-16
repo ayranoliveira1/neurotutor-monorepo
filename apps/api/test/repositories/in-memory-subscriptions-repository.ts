@@ -36,4 +36,23 @@ export class InMemorySubscriptionsRepository implements subscriptionsRepository 
     )
     return subscription ?? null
   }
+
+  async existsByPlanId(planId: string): Promise<boolean> {
+    return this.items.some((item) => item.planId.toString() === planId)
+  }
+
+  async findPlanIdsWithSubscriptions(): Promise<string[]> {
+    return [...new Set(this.items.map((item) => item.planId.toString()))]
+  }
+
+  async updatePlanNameByPlanId(
+    planId: string,
+    planName: string,
+  ): Promise<void> {
+    this.items.forEach((item) => {
+      if (item.planId.toString() === planId) {
+        item.planName = planName
+      }
+    })
+  }
 }

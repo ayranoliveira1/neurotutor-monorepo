@@ -6,6 +6,7 @@ import { CreatePlanUseCase } from '@/domain/application/use-cases/admin/plan/cre
 import { UpdatePlanUseCase } from '@/domain/application/use-cases/admin/plan/update-plan-use-case'
 import { DeletePlanUseCase } from '@/domain/application/use-cases/admin/plan/delete-plan-use-case'
 import { ListPlansUseCase } from '@/domain/application/use-cases/admin/plan/list-plans-use-case'
+import { AdminListPlansUseCase } from '@/domain/application/use-cases/admin/plan/admin-list-plans-use-case'
 import { AdminCreateUserUseCase } from '@/domain/application/use-cases/admin/user/admin-create-user-use-case'
 import { AdminListUsersUseCase } from '@/domain/application/use-cases/admin/user/admin-list-users-use-case'
 import { AdminGetUserByIdUseCase } from '@/domain/application/use-cases/admin/user/admin-get-user-by-id-use-case'
@@ -16,6 +17,7 @@ import { CreatePlanController } from './plan/create-plan.controller'
 import { UpdatePlanController } from './plan/update-plan.controller'
 import { DeletePlanController } from './plan/delete-plan.controller'
 import { ListPlansController } from './plan/list-plans.controller'
+import { AdminListPlansController } from './plan/admin-list-plans.controller'
 import { AdminCreateUserController } from './user/admin-create-user.controller'
 import { AdminListUsersController } from './user/admin-list-users.controller'
 import { AdminGetUserByIdController } from './user/admin-get-user-by-id.controller'
@@ -28,6 +30,7 @@ import { AdminDeleteUserController } from './user/admin-delete-user.controller'
     UpdatePlanController,
     DeletePlanController,
     ListPlansController,
+    AdminListPlansController,
     AdminCreateUserController,
     AdminListUsersController,
     AdminGetUserByIdController,
@@ -40,6 +43,7 @@ import { AdminDeleteUserController } from './user/admin-delete-user.controller'
     UpdatePlanUseCase,
     DeletePlanUseCase,
     ListPlansUseCase,
+    AdminListPlansUseCase,
     AdminCreateUserUseCase,
     AdminListUsersUseCase,
     AdminGetUserByIdUseCase,

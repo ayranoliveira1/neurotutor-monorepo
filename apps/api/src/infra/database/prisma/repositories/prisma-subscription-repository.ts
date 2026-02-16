@@ -66,4 +66,28 @@ export class PrismaSubscriptionRepository implements subscriptionsRepository {
 
     return SubscriptionsMapper.toDomain(subscription)
   }
+
+  async existsByPlanId(planId: string): Promise<boolean> {
+    const count = await this.prisma.subscription.count({
+      where: { planId },
+    })
+    return count > 0
+  }
+
+  async findPlanIdsWithSubscriptions(): Promise<string[]> {
+    const result = await this.prisma.subscription.groupBy({
+      by: ['planId'],
+    })
+    return result.map((r) => r.planId)
+  }
+
+  async updatePlanNameByPlanId(
+    planId: string,
+    planName: string,
+  ): Promise<void> {
+    await this.prisma.subscription.updateMany({
+      where: { planId },
+      data: { planName },
+    })
+  }
 }
