@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useDebouncedCallback } from 'use-debounce'
 import { format } from 'date-fns'
 import { Search, X } from 'lucide-react'
 import type { DateRange } from 'react-day-picker'
@@ -98,13 +99,9 @@ export function UsersFilters({ plans }: UsersFiltersProps) {
     })
   }
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      updateParams({ search })
-    }, 400)
-
-    return () => clearTimeout(timeout)
-  }, [search, updateParams])
+  const debouncedUpdateSearch = useDebouncedCallback((value: string) => {
+    updateParams({ search: value })
+  }, 400)
 
   return (
     <div className="space-y-3">
@@ -114,7 +111,10 @@ export function UsersFilters({ plans }: UsersFiltersProps) {
           <Input
             placeholder="Buscar por nome ou e-mail..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value)
+              debouncedUpdateSearch(e.target.value)
+            }}
             className="pl-9"
           />
         </div>
@@ -130,7 +130,7 @@ export function UsersFilters({ plans }: UsersFiltersProps) {
           />
         </div>
 
-        <div className="grid gap-1 w-full sm:w-36">
+        <div className="grid gap-1 min-w-0 flex-1 sm:w-36 sm:flex-none">
           <Label className="text-xs text-muted-foreground">Papel</Label>
           <Select
             options={roleOptions}
@@ -139,7 +139,7 @@ export function UsersFilters({ plans }: UsersFiltersProps) {
           />
         </div>
 
-        <div className="grid gap-1 w-full sm:w-36">
+        <div className="grid gap-1 min-w-0 flex-1 sm:w-36 sm:flex-none">
           <Label className="text-xs text-muted-foreground">Status</Label>
           <Select
             options={activeOptions}
@@ -148,7 +148,7 @@ export function UsersFilters({ plans }: UsersFiltersProps) {
           />
         </div>
 
-        <div className="grid gap-1 w-full sm:w-36">
+        <div className="grid gap-1 min-w-0 flex-1 sm:w-36 sm:flex-none">
           <Label className="text-xs text-muted-foreground">Plano</Label>
           <Select
             options={planOptions}
