@@ -36,7 +36,7 @@ export class PrismaPlansRepository implements PlansRepository {
       where: { active: true },
       orderBy: { priceCents: 'asc' },
     })
-    return plans.map(PlanMapper.toDomain)
+    return plans.map((plan) => PlanMapper.toDomain(plan))
   }
 
   async delete(id: string): Promise<void> {
