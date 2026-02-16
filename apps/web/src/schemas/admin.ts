@@ -1,0 +1,36 @@
+import { z } from 'zod'
+
+export const adminCreateUserSchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Nome é obrigatório')
+    .min(3, 'Nome deve ter no mínimo 3 caracteres'),
+  email: z.string().min(1, 'E-mail é obrigatório').email('E-mail inválido'),
+  password: z
+    .string()
+    .min(1, 'Senha é obrigatória')
+    .min(6, 'Senha deve ter no mínimo 6 caracteres'),
+  planSlug: z.string().min(1, 'Plano é obrigatório'),
+  durationDays: z.coerce
+    .number({ invalid_type_error: 'Duração é obrigatória' })
+    .int('Duração deve ser um número inteiro')
+    .min(1, 'Duração mínima é 1 dia'),
+  role: z.enum(['ADMIN', 'STUDENT', 'TEACHER']).optional(),
+})
+
+export type AdminCreateUserInput = z.infer<typeof adminCreateUserSchema>
+
+export const adminUpdateUserSchema = z.object({
+  id: z.string().min(1),
+  name: z
+    .string()
+    .min(3, 'Nome deve ter no mínimo 3 caracteres')
+    .optional(),
+  email: z.string().email('E-mail inválido').optional(),
+  role: z.enum(['ADMIN', 'STUDENT', 'TEACHER']).optional(),
+  planId: z.string().optional(),
+  endDate: z.string().optional(),
+  active: z.enum(['true', 'false']).optional(),
+})
+
+export type AdminUpdateUserInput = z.infer<typeof adminUpdateUserSchema>

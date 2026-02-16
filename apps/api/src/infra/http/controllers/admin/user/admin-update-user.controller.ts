@@ -12,6 +12,9 @@ const AdminUpdateUserSchema = z.object({
   name: z.string().min(1).optional(),
   email: z.string().email().optional(),
   role: z.nativeEnum(Role).optional(),
+  planId: z.string().min(1).optional(),
+  endDate: z.coerce.date().optional(),
+  active: z.boolean().optional(),
 })
 
 type AdminUpdateUserDto = z.infer<typeof AdminUpdateUserSchema>

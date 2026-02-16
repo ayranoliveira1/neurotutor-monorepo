@@ -75,7 +75,6 @@ export async function getCurrentUser(): Promise<GetCurrentUserResult> {
     }
 
     const user = data.data?.user
-    console.log('Current user:', user)
     if (!user) {
       await clearSessionCookies()
       return { status: 'unauthenticated' }

@@ -9,6 +9,9 @@ interface AdminListUsersUseCaseRequest {
   search?: string
   startDate?: Date
   endDate?: Date
+  role?: string
+  active?: boolean
+  planId?: string
 }
 
 type AdminListUsersUseCaseResponse = Either<never, UserPagination>
@@ -23,6 +26,9 @@ export class AdminListUsersUseCase {
     search,
     startDate,
     endDate,
+    role,
+    active,
+    planId,
   }: AdminListUsersUseCaseRequest): Promise<AdminListUsersUseCaseResponse> {
     const result = await this.usersRepository.findMany({
       page,
@@ -30,6 +36,9 @@ export class AdminListUsersUseCase {
       search,
       startDate,
       endDate,
+      role,
+      active,
+      planId,
     })
 
     return right(result)

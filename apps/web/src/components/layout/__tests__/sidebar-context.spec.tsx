@@ -17,4 +17,22 @@ describe('useSidebar', () => {
     expect(result.current.collapsed).toBe(false)
     expect(typeof result.current.toggleCollapsed).toBe('function')
   })
+
+  it('should have null userRole by default', () => {
+    const { result } = renderHook(() => useSidebar(), {
+      wrapper: SidebarProvider,
+    })
+
+    expect(result.current.userRole).toBeNull()
+  })
+
+  it('should expose the provided userRole', () => {
+    const { result } = renderHook(() => useSidebar(), {
+      wrapper: ({ children }) => (
+        <SidebarProvider userRole="ADMIN">{children}</SidebarProvider>
+      ),
+    })
+
+    expect(result.current.userRole).toBe('ADMIN')
+  })
 })
