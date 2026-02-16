@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Sidebar } from '../sidebar'
 import { SidebarProvider, useSidebar } from '../sidebar-context'
-import { navigationGroups } from '@/config/navigation'
+import { getNavigationGroups } from '@/config/navigation'
 
 vi.mock('next/link', () => ({
   default: ({
@@ -49,7 +49,8 @@ describe('Sidebar', () => {
     const headings = screen.getAllByRole('heading', { level: 3 })
     const headingTexts = headings.map((h) => h.textContent)
 
-    for (const group of navigationGroups) {
+    const groups = getNavigationGroups(null)
+    for (const group of groups) {
       expect(headingTexts).toContain(group.title)
     }
   })
@@ -57,7 +58,8 @@ describe('Sidebar', () => {
   it('should render all navigation items as links', () => {
     renderSidebar()
 
-    const allItems = navigationGroups.flatMap((g) => g.items)
+    const groups = getNavigationGroups(null)
+    const allItems = groups.flatMap((g) => g.items)
     for (const item of allItems) {
       const link = screen.getByRole('link', { name: item.label })
       expect(link).toBeInTheDocument()
@@ -76,10 +78,8 @@ describe('Sidebar', () => {
   it('should render the correct number of items', () => {
     renderSidebar()
 
-    const totalItems = navigationGroups.reduce(
-      (sum, g) => sum + g.items.length,
-      0
-    )
+    const groups = getNavigationGroups(null)
+    const totalItems = groups.reduce((sum, g) => sum + g.items.length, 0)
     const links = screen.getAllByRole('link')
     expect(links).toHaveLength(totalItems)
   })

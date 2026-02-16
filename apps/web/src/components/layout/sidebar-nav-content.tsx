@@ -1,8 +1,9 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { navigationGroups } from '@/config/navigation'
+import { getNavigationGroups } from '@/config/navigation'
 import { SidebarNavItem } from './sidebar-nav-item'
+import { useSidebar } from './sidebar-context'
 
 interface SidebarNavContentProps {
   pathname: string
@@ -15,6 +16,9 @@ export function SidebarNavContent({
   collapsed = false,
   onNavigate,
 }: SidebarNavContentProps) {
+  const { userRole } = useSidebar()
+  const groups = getNavigationGroups(userRole)
+
   return (
     <div className="flex h-full flex-col">
       <div className={cn('flex h-16 shrink-0 items-center', collapsed ? 'justify-center px-2' : 'px-6')}>
@@ -29,7 +33,7 @@ export function SidebarNavContent({
       </div>
 
       <nav className={cn('flex-1 overflow-y-auto pb-4', collapsed ? 'px-2' : 'px-3')}>
-        {navigationGroups.map((group) => (
+        {groups.map((group) => (
           <div key={group.title} className="mb-4">
             {!collapsed && (
               <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-sidebar-foreground/50">
