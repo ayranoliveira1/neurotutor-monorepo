@@ -7,6 +7,9 @@ export interface FindManyUsersParams {
   search?: string
   startDate?: Date
   endDate?: Date
+  role?: string
+  active?: boolean
+  planId?: string
 }
 
 export abstract class UsersRepository {
