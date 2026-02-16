@@ -62,14 +62,12 @@ export function RatingsTable({ ratings, onDelete }: RatingsTableProps) {
           <TableBody>
             {ratings.map((rating) => (
               <TableRow key={rating.id}>
-                <TableCell className="font-medium">
-                  {rating.userName}
-                </TableCell>
+                <TableCell className="font-medium">{rating.userName}</TableCell>
                 <TableCell>{rating.userEmail}</TableCell>
                 <TableCell>
                   <StarDisplay value={rating.rating} />
                 </TableCell>
-                <TableCell className="max-w-[300px] truncate">
+                <TableCell className="max-w-75 truncate">
                   {rating.description}
                 </TableCell>
                 <TableCell>
