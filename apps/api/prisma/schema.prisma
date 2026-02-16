@@ -25,6 +25,7 @@ model User {
   accounts               Account[]
   sessions               Session[]
   subscriptions          Subscription[]
+  ratings                Rating[]
 
   @@map("users")
 }
@@ -122,6 +123,17 @@ model Verification {
 
   @@index([identifier])
   @@map("verifications")
+}
+
+model Rating {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  rating      Int
+  description String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ratings")
 }
 
 enum BillingCycle {

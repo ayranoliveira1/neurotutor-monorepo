@@ -6,6 +6,7 @@ import { SidebarProvider } from '@/components/layout/sidebar-context'
 import { Sidebar } from '@/components/layout/sidebar'
 import { MobileSidebar } from '@/components/layout/mobile-sidebar'
 import { AppHeader } from '@/components/layout/app-header'
+import { RatingPopup } from '@/components/rating/rating-popup'
 
 export default async function PrivateLayout({
   children,
@@ -32,6 +33,7 @@ export default async function PrivateLayout({
             <main className="flex-1 bg-muted/30 p-4 md:p-6">{children}</main>
           </div>
         </div>
+        {user && <RatingPopup userId={user.id} />}
       </SidebarProvider>
     </ThemeProvider>
   )
