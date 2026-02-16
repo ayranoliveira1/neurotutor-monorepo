@@ -29,13 +29,10 @@ export class InMemoryPlansRepository implements PlansRepository {
   }
 
   async findAll(): Promise<Plan[]> {
-    return this.items.filter((item) => item.active)
+    return this.items
   }
 
   async delete(id: string): Promise<void> {
-    const plan = this.items.find((item) => item.id.toString() === id)
-    if (plan) {
-      plan.active = false
-    }
+    this.items = this.items.filter((item) => item.id.toString() !== id)
   }
 }
