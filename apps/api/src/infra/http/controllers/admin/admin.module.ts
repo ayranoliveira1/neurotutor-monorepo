@@ -1,0 +1,50 @@
+import { Module } from '@nestjs/common'
+import { AuthProvider } from '@/domain/application/providers/auth-provider'
+import { BetterAuthProvider } from '@/infra/auth/auth-provider'
+
+import { CreatePlanUseCase } from '@/domain/application/use-cases/admin/plan/create-plan-use-case'
+import { UpdatePlanUseCase } from '@/domain/application/use-cases/admin/plan/update-plan-use-case'
+import { DeletePlanUseCase } from '@/domain/application/use-cases/admin/plan/delete-plan-use-case'
+import { ListPlansUseCase } from '@/domain/application/use-cases/admin/plan/list-plans-use-case'
+import { AdminCreateUserUseCase } from '@/domain/application/use-cases/admin/user/admin-create-user-use-case'
+import { AdminListUsersUseCase } from '@/domain/application/use-cases/admin/user/admin-list-users-use-case'
+import { AdminGetUserByIdUseCase } from '@/domain/application/use-cases/admin/user/admin-get-user-by-id-use-case'
+import { AdminUpdateUserUseCase } from '@/domain/application/use-cases/admin/user/admin-update-user-use-case'
+import { AdminDeleteUserUseCase } from '@/domain/application/use-cases/admin/user/admin-delete-user-use-case'
+
+import { CreatePlanController } from './plan/create-plan.controller'
+import { UpdatePlanController } from './plan/update-plan.controller'
+import { DeletePlanController } from './plan/delete-plan.controller'
+import { ListPlansController } from './plan/list-plans.controller'
+import { AdminCreateUserController } from './user/admin-create-user.controller'
+import { AdminListUsersController } from './user/admin-list-users.controller'
+import { AdminGetUserByIdController } from './user/admin-get-user-by-id.controller'
+import { AdminUpdateUserController } from './user/admin-update-user.controller'
+import { AdminDeleteUserController } from './user/admin-delete-user.controller'
+
+@Module({
+  controllers: [
+    CreatePlanController,
+    UpdatePlanController,
+    DeletePlanController,
+    ListPlansController,
+    AdminCreateUserController,
+    AdminListUsersController,
+    AdminGetUserByIdController,
+    AdminUpdateUserController,
+    AdminDeleteUserController,
+  ],
+  providers: [
+    { provide: AuthProvider, useClass: BetterAuthProvider },
+    CreatePlanUseCase,
+    UpdatePlanUseCase,
+    DeletePlanUseCase,
+    ListPlansUseCase,
+    AdminCreateUserUseCase,
+    AdminListUsersUseCase,
+    AdminGetUserByIdUseCase,
+    AdminUpdateUserUseCase,
+    AdminDeleteUserUseCase,
+  ],
+})
+export class AdminModule {}
