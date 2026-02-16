@@ -9,7 +9,7 @@ export const adminCreateUserSchema = z.object({
   password: z
     .string()
     .min(1, 'Senha é obrigatória')
-    .min(6, 'Senha deve ter no mínimo 6 caracteres'),
+    .min(8, 'Senha deve ter no mínimo 8 caracteres'),
   planSlug: z.string().min(1, 'Plano é obrigatório'),
   durationDays: z.coerce
     .number({ invalid_type_error: 'Duração é obrigatória' })
