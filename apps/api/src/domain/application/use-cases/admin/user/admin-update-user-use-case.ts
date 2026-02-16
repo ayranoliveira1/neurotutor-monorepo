@@ -2,8 +2,11 @@ import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { Role } from '@/core/enums/enums'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { User } from '@/domain/entreprise/entities/user'
 import { UsersRepository } from '../../../repositories/users-repository'
+import { subscriptionsRepository } from '../../../repositories/subscriptions-repository'
+import { PlansRepository } from '../../../repositories/plans-repository'
 import { Injectable } from '@nestjs/common'
 
 interface AdminUpdateUserUseCaseRequest {
@@ -11,6 +14,9 @@ interface AdminUpdateUserUseCaseRequest {
   name?: string
   email?: string
   role?: Role
+  planId?: string
+  endDate?: Date
+  active?: boolean
 }
 
 type AdminUpdateUserUseCaseResponse = Either<
@@ -21,13 +27,20 @@ type AdminUpdateUserUseCaseResponse = Either<
 
 @Injectable()
 export class AdminUpdateUserUseCase {
-  constructor(private usersRepository: UsersRepository) {}
+  constructor(
+    private usersRepository: UsersRepository,
+    private subscriptionsRepository: subscriptionsRepository,
+    private plansRepository: PlansRepository,
+  ) {}
 
   async execute({
     userId,
     name,
     email,
     role,
+    planId,
+    endDate,
+    active,
   }: AdminUpdateUserUseCaseRequest): Promise<AdminUpdateUserUseCaseResponse> {
     const user = await this.usersRepository.findById(userId)
 
@@ -67,6 +80,55 @@ export class AdminUpdateUserUseCase {
     if (role !== undefined) user.role = role
 
     await this.usersRepository.save(user)
+
+    const hasSubscriptionChanges =
+      planId !== undefined || endDate !== undefined || active !== undefined
+
+    if (hasSubscriptionChanges) {
+      const subscription =
+        await this.subscriptionsRepository.findByUserId(userId)
+
+      if (!subscription) {
+        return left(
+          new ResourceNotFoundError({
+            errors: [
+              {
+                message: 'Assinatura não encontrada.',
+              },
+            ],
+          }),
+        )
+      }
+
+      if (planId && planId !== subscription.planId.toString()) {
+        const plan = await this.plansRepository.findById(planId)
+
+        if (!plan) {
+          return left(
+            new ResourceNotFoundError({
+              errors: [
+                {
+                  message: 'Plano não encontrado.',
+                },
+              ],
+            }),
+          )
+        }
+
+        subscription.planId = new UniqueEntityID(planId)
+        subscription.planName = plan.name
+      }
+
+      if (endDate !== undefined) {
+        subscription.endDate = endDate
+      }
+
+      if (active !== undefined) {
+        subscription.active = active
+      }
+
+      await this.subscriptionsRepository.update(subscription)
+    }
 
     return right({ user })
   }
