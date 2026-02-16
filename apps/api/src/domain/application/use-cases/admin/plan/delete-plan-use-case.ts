@@ -1,6 +1,8 @@
 import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
+import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { PlansRepository } from '../../../repositories/plans-repository'
+import { subscriptionsRepository } from '../../../repositories/subscriptions-repository'
 import { Injectable } from '@nestjs/common'
 
 interface DeletePlanUseCaseRequest {
@@ -8,13 +10,17 @@ interface DeletePlanUseCaseRequest {
 }
 
 type DeletePlanUseCaseResponse = Either<
-  ResourceNotFoundError<DeletePlanUseCaseRequest>,
+  | ResourceNotFoundError<DeletePlanUseCaseRequest>
+  | NotAllowedError<DeletePlanUseCaseRequest>,
   { message: string }
 >
 
 @Injectable()
 export class DeletePlanUseCase {
-  constructor(private plansRepository: PlansRepository) {}
+  constructor(
+    private plansRepository: PlansRepository,
+    private subscriptionsRepository: subscriptionsRepository,
+  ) {}
 
   async execute({
     planId,
@@ -29,7 +35,24 @@ export class DeletePlanUseCase {
               message: 'Plano não encontrado.',
             },
           ],
-        })
+        }),
+      )
+    }
+
+    const hasSubscriptions =
+      await this.subscriptionsRepository.existsByPlanId(planId)
+
+    if (hasSubscriptions) {
+      return left(
+        new NotAllowedError({
+          statusCode: 409,
+          errors: [
+            {
+              message:
+                'Plano não pode ser excluído pois está vinculado a assinaturas.',
+            },
+          ],
+        }),
       )
     }
 
