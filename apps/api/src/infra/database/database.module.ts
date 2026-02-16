@@ -8,6 +8,8 @@ import { CheckoutRepository } from '@/domain/application/repositories/checkout-r
 import { PrismaCheckoutRepository } from './prisma/repositories/prisma-checkout-repository'
 import { PlansRepository } from '@/domain/application/repositories/plans-repository'
 import { PrismaPlansRepository } from './prisma/repositories/prisma-plans-repository'
+import { RatingsRepository } from '@/domain/application/repositories/ratings-repository'
+import { PrismaRatingsRepository } from './prisma/repositories/prisma-ratings-repository'
 
 @Global()
 @Module({
@@ -33,6 +35,11 @@ import { PrismaPlansRepository } from './prisma/repositories/prisma-plans-reposi
       provide: PlansRepository,
       useClass: PrismaPlansRepository
     },
+
+    {
+      provide: RatingsRepository,
+      useClass: PrismaRatingsRepository
+    },
   ],
   exports: [
     PrismaService,
@@ -40,6 +47,7 @@ import { PrismaPlansRepository } from './prisma/repositories/prisma-plans-reposi
     UsersRepository,
     CheckoutRepository,
     PlansRepository,
+    RatingsRepository,
   ],
 })
 export class DatabaseModule { }

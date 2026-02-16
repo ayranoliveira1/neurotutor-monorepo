@@ -12,6 +12,8 @@ import { AdminListUsersUseCase } from '@/domain/application/use-cases/admin/user
 import { AdminGetUserByIdUseCase } from '@/domain/application/use-cases/admin/user/admin-get-user-by-id-use-case'
 import { AdminUpdateUserUseCase } from '@/domain/application/use-cases/admin/user/admin-update-user-use-case'
 import { AdminDeleteUserUseCase } from '@/domain/application/use-cases/admin/user/admin-delete-user-use-case'
+import { AdminListRatingsUseCase } from '@/domain/application/use-cases/admin/rating/admin-list-ratings-use-case'
+import { AdminDeleteRatingUseCase } from '@/domain/application/use-cases/admin/rating/admin-delete-rating-use-case'
 
 import { CreatePlanController } from './plan/create-plan.controller'
 import { UpdatePlanController } from './plan/update-plan.controller'
@@ -23,6 +25,8 @@ import { AdminListUsersController } from './user/admin-list-users.controller'
 import { AdminGetUserByIdController } from './user/admin-get-user-by-id.controller'
 import { AdminUpdateUserController } from './user/admin-update-user.controller'
 import { AdminDeleteUserController } from './user/admin-delete-user.controller'
+import { AdminListRatingsController } from './rating/admin-list-ratings.controller'
+import { AdminDeleteRatingController } from './rating/admin-delete-rating.controller'
 
 @Module({
   controllers: [
@@ -36,6 +40,8 @@ import { AdminDeleteUserController } from './user/admin-delete-user.controller'
     AdminGetUserByIdController,
     AdminUpdateUserController,
     AdminDeleteUserController,
+    AdminListRatingsController,
+    AdminDeleteRatingController,
   ],
   providers: [
     { provide: AuthProvider, useClass: BetterAuthProvider },
@@ -49,6 +55,8 @@ import { AdminDeleteUserController } from './user/admin-delete-user.controller'
     AdminGetUserByIdUseCase,
     AdminUpdateUserUseCase,
     AdminDeleteUserUseCase,
+    AdminListRatingsUseCase,
+    AdminDeleteRatingUseCase,
   ],
 })
 export class AdminModule {}
