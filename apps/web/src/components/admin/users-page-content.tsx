@@ -30,7 +30,7 @@ export function UsersPageContent() {
 
   const usersQuery = useUsersQuery({
     page,
-    perPage: 20,
+    perPage: 10,
     search: search || undefined,
     role: role || undefined,
     active: active || undefined,
@@ -108,11 +108,7 @@ export function UsersPageContent() {
 
       <UsersFilters plans={plansQuery.data ?? []} />
 
-      <UsersTable
-        users={users}
-        onEdit={setEditUser}
-        onDelete={setDeleteUser}
-      />
+      <UsersTable users={users} onEdit={setEditUser} onDelete={setDeleteUser} />
 
       {totalPages > 1 && (
         <UsersPagination
