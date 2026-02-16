@@ -62,8 +62,13 @@ export function CreatePlanDialog({
     formState: { errors },
   } = form
 
+  function handleOpenChange(open: boolean) {
+    if (!open) form.reset()
+    onOpenChange(open)
+  }
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Criar plano</DialogTitle>
@@ -156,7 +161,7 @@ export function CreatePlanDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={() => handleOpenChange(false)}
             >
               Cancelar
             </Button>

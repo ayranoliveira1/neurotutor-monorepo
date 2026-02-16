@@ -73,6 +73,11 @@ export function EditPlanDialog({
     reset,
   } = form
 
+  function handleOpenChange(open: boolean) {
+    if (!open) form.reset()
+    onOpenChange(open)
+  }
+
   useEffect(() => {
     if (plan && open) {
       reset({
@@ -88,7 +93,7 @@ export function EditPlanDialog({
   }, [plan, open, reset])
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Editar plano</DialogTitle>
@@ -197,7 +202,7 @@ export function EditPlanDialog({
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={() => handleOpenChange(false)}
             >
               Cancelar
             </Button>
