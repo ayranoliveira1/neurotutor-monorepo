@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { toast } from 'sonner'
 import {
   Dialog,
   DialogContent,
@@ -62,6 +63,9 @@ export function EditPlanDialog({
         onSuccess: () => {
           onOpenChange(false)
           onSuccess()
+        },
+        onError: ({ error }) => {
+          toast.error(error.serverError ?? 'Erro ao atualizar plano')
         },
       },
     },

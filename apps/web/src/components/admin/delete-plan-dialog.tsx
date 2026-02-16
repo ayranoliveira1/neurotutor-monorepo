@@ -1,6 +1,7 @@
 'use client'
 
 import { useAction } from 'next-safe-action/hooks'
+import { toast } from 'sonner'
 import {
   Dialog,
   DialogContent,
@@ -30,6 +31,9 @@ export function DeletePlanDialog({
     onSuccess: () => {
       onOpenChange(false)
       onSuccess()
+    },
+    onError: ({ error }) => {
+      toast.error(error.serverError ?? 'Erro ao excluir plano')
     },
   })
 
