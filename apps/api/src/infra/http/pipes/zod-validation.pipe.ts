@@ -1,0 +1,29 @@
+import { BadRequestException, PipeTransform } from '@nestjs/common'
+import { ZodError, ZodType } from 'zod'
+import { UseCaseError } from '@/core/errors/use-case-error'
+import { CustomHttpException } from '../exception/custom-http.exception'
+
+export class ZodValidationPipe implements PipeTransform {
+  constructor(private schema: ZodType) {}
+
+  transform(value: unknown) {
+    try {
+      return this.schema.parse(value)
+    } catch (error) {
+      if (error instanceof ZodError) {
+        console.log('Validation failed for value:', value)
+        console.log('Zod errors:', error.issues)
+        throw new CustomHttpException(
+          new UseCaseError({
+            errors: error.issues.map((issue) => ({
+              message: issue.message,
+              path: issue.path,
+            })),
+            statusCode: 400,
+          })
+        )
+      }
+      throw new BadRequestException('Invalid request data')
+    }
+  }
+}
