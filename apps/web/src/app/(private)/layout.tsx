@@ -23,7 +23,7 @@ export default async function PrivateLayout({
 
   return (
     <ThemeProvider>
-      <SidebarProvider>
+      <SidebarProvider userRole={user?.role ?? null}>
         <div className="flex min-h-screen">
           <Sidebar />
           <MobileSidebar />
