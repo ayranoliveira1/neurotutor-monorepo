@@ -18,4 +18,5 @@ export abstract class UsersRepository {
   abstract findById(id: string): Promise<User | null>
   abstract findMany(params: FindManyUsersParams): Promise<UserPagination>
   abstract delete(id: string): Promise<void>
+  abstract findAllIds(): Promise<string[]>
 }
