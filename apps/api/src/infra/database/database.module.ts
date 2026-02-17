@@ -10,6 +10,8 @@ import { PlansRepository } from '@/domain/application/repositories/plans-reposit
 import { PrismaPlansRepository } from './prisma/repositories/prisma-plans-repository'
 import { RatingsRepository } from '@/domain/application/repositories/ratings-repository'
 import { PrismaRatingsRepository } from './prisma/repositories/prisma-ratings-repository'
+import { NotificationsRepository } from '@/domain/application/repositories/notifications-repository'
+import { PrismaNotificationsRepository } from './prisma/repositories/prisma-notifications-repository'
 
 @Global()
 @Module({
@@ -40,6 +42,11 @@ import { PrismaRatingsRepository } from './prisma/repositories/prisma-ratings-re
       provide: RatingsRepository,
       useClass: PrismaRatingsRepository
     },
+
+    {
+      provide: NotificationsRepository,
+      useClass: PrismaNotificationsRepository
+    },
   ],
   exports: [
     PrismaService,
@@ -48,6 +55,7 @@ import { PrismaRatingsRepository } from './prisma/repositories/prisma-ratings-re
     CheckoutRepository,
     PlansRepository,
     RatingsRepository,
+    NotificationsRepository,
   ],
 })
 export class DatabaseModule { }
