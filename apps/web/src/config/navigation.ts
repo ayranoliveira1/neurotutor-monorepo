@@ -1,4 +1,11 @@
-import { Home, Users, CreditCard, Star, type LucideIcon } from 'lucide-react'
+import {
+  Home,
+  Users,
+  CreditCard,
+  Star,
+  Bell,
+  type LucideIcon,
+} from 'lucide-react'
 
 export interface NavItem {
   label: string
@@ -24,6 +31,7 @@ export const navigationGroups: NavGroup[] = [
       { label: 'Usuários', href: '/admin/usuarios', icon: Users },
       { label: 'Planos', href: '/admin/planos', icon: CreditCard },
       { label: 'Avaliações', href: '/admin/avaliacoes', icon: Star },
+      { label: 'Notificações', href: '/admin/notificacoes', icon: Bell },
     ],
   },
 ]
