@@ -14,6 +14,9 @@ import { AdminUpdateUserUseCase } from '@/domain/application/use-cases/admin/use
 import { AdminDeleteUserUseCase } from '@/domain/application/use-cases/admin/user/admin-delete-user-use-case'
 import { AdminListRatingsUseCase } from '@/domain/application/use-cases/admin/rating/admin-list-ratings-use-case'
 import { AdminDeleteRatingUseCase } from '@/domain/application/use-cases/admin/rating/admin-delete-rating-use-case'
+import { CreateNotificationUseCase } from '@/domain/application/use-cases/admin/notification/create-notification-use-case'
+import { AdminListNotificationsUseCase } from '@/domain/application/use-cases/admin/notification/admin-list-notifications-use-case'
+import { AdminDeleteNotificationUseCase } from '@/domain/application/use-cases/admin/notification/admin-delete-notification-use-case'
 
 import { CreatePlanController } from './plan/create-plan.controller'
 import { UpdatePlanController } from './plan/update-plan.controller'
@@ -27,6 +30,9 @@ import { AdminUpdateUserController } from './user/admin-update-user.controller'
 import { AdminDeleteUserController } from './user/admin-delete-user.controller'
 import { AdminListRatingsController } from './rating/admin-list-ratings.controller'
 import { AdminDeleteRatingController } from './rating/admin-delete-rating.controller'
+import { AdminCreateNotificationController } from './notification/admin-create-notification.controller'
+import { AdminListNotificationsController } from './notification/admin-list-notifications.controller'
+import { AdminDeleteNotificationController } from './notification/admin-delete-notification.controller'
 
 @Module({
   controllers: [
@@ -42,6 +48,9 @@ import { AdminDeleteRatingController } from './rating/admin-delete-rating.contro
     AdminDeleteUserController,
     AdminListRatingsController,
     AdminDeleteRatingController,
+    AdminCreateNotificationController,
+    AdminListNotificationsController,
+    AdminDeleteNotificationController,
   ],
   providers: [
     { provide: AuthProvider, useClass: BetterAuthProvider },
@@ -57,6 +66,9 @@ import { AdminDeleteRatingController } from './rating/admin-delete-rating.contro
     AdminDeleteUserUseCase,
     AdminListRatingsUseCase,
     AdminDeleteRatingUseCase,
+    CreateNotificationUseCase,
+    AdminListNotificationsUseCase,
+    AdminDeleteNotificationUseCase,
   ],
 })
 export class AdminModule {}
