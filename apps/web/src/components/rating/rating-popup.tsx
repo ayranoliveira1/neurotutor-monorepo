@@ -103,13 +103,17 @@ export function RatingPopup({ userId }: RatingPopupProps) {
       data-testid="rating-popup"
       aria-hidden={!open}
       className={cn(
-        'fixed bottom-4 right-4 z-50 w-95 rounded-lg border border-primary bg-primary p-6 text-primary-foreground shadow-lg',
+        'fixed z-50 border border-primary bg-primary text-primary-foreground shadow-lg',
         'transition-all duration-300 ease-in-out',
+        'inset-x-0 bottom-0 w-full rounded-t-xl p-4',
+        'sm:inset-x-auto sm:bottom-4 sm:right-4 sm:w-95 sm:rounded-lg sm:p-6',
         open
-          ? 'translate-x-0 opacity-100'
-          : 'pointer-events-none translate-x-[calc(100%+2rem)] opacity-0'
+          ? 'translate-y-0 sm:translate-y-0 sm:translate-x-0 opacity-100'
+          : 'pointer-events-none translate-y-full sm:translate-y-0 sm:translate-x-[calc(100%+2rem)] opacity-0'
       )}
     >
+      <div className="mx-auto mb-3 h-1 w-10 rounded-full bg-primary-foreground/30 sm:hidden" />
+
       <button
         type="button"
         onClick={handleClose}
@@ -119,20 +123,22 @@ export function RatingPopup({ userId }: RatingPopupProps) {
         <X className="h-4 w-4" />
       </button>
 
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Avalie a plataforma</h3>
+      <div className="mb-3 sm:mb-4">
+        <h3 className="text-base font-semibold sm:text-lg">
+          Avalie a plataforma
+        </h3>
         <p className="text-sm text-primary-foreground/80">
           Sua opinião é muito importante para nós!
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
         <div className="space-y-2">
           <Label>Sua avaliação</Label>
           <StarRating
             value={rating}
             onChange={setRating}
-            size={32}
+            size={28}
             disabled={isPending}
           />
         </div>
@@ -141,7 +147,7 @@ export function RatingPopup({ userId }: RatingPopupProps) {
           <Label htmlFor="rating-description">Descrição (opcional)</Label>
           <textarea
             id="rating-description"
-            className="flex min-h-20 w-full rounded-md border border-primary-foreground/20! bg-primary-foreground/10 px-3 py-2 text-sm text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/30 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex min-h-16 w-full rounded-md border border-primary-foreground/20! bg-primary-foreground/10 px-3 py-2 text-sm text-primary-foreground placeholder:text-primary-foreground/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground/30 disabled:cursor-not-allowed disabled:opacity-50 sm:min-h-20"
             placeholder="Conte como está sendo sua experiência..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}

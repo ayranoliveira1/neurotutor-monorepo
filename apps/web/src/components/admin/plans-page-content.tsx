@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Plus, AlertCircle, Loader2 } from 'lucide-react'
+import { Plus, AlertCircle } from 'lucide-react'
 import type { AdminPlan } from '@/actions/admin/list-plans-admin'
 import { usePlansAdminQuery } from '@/hooks/admin/use-plans-admin-query'
 import { PlansTable } from './plans-table'
@@ -12,6 +12,7 @@ import { CreatePlanDialog } from './create-plan-dialog'
 import { EditPlanDialog } from './edit-plan-dialog'
 import { DeletePlanDialog } from './delete-plan-dialog'
 import { TogglePlanDialog } from './toggle-plan-dialog'
+import { PlansPageSkeleton } from './plans-page-skeleton'
 
 export function PlansPageContent() {
   const queryClient = useQueryClient()
@@ -53,11 +54,7 @@ export function PlansPageContent() {
   }
 
   if (plansQuery.isLoading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <PlansPageSkeleton />
   }
 
   if (plansQuery.isError) {

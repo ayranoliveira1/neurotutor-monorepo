@@ -23,10 +23,11 @@ export function UsersPagination({
     const params = new URLSearchParams(searchParams.toString())
     params.set('page', String(page))
     router.push(`${pathname}?${params.toString()}`)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-between">
       <p className="text-sm text-muted-foreground">
         {totalItems} usuário{totalItems !== 1 ? 's' : ''} encontrado
         {totalItems !== 1 ? 's' : ''}

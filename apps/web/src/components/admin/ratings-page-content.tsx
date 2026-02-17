@@ -4,12 +4,13 @@ import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { AlertCircle, Loader2 } from 'lucide-react'
+import { AlertCircle } from 'lucide-react'
 import type { AdminRating } from '@/actions/admin/list-ratings'
 import { useRatingsQuery } from '@/hooks/admin/use-ratings-query'
 import { RatingsTable } from './ratings-table'
 import { RatingsPagination } from './ratings-pagination'
 import { DeleteRatingDialog } from './delete-rating-dialog'
+import { RatingsPageSkeleton } from './ratings-page-skeleton'
 
 export function RatingsPageContent() {
   const queryClient = useQueryClient()
@@ -28,11 +29,7 @@ export function RatingsPageContent() {
   }
 
   if (ratingsQuery.isLoading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <RatingsPageSkeleton />
   }
 
   if (ratingsQuery.isError) {

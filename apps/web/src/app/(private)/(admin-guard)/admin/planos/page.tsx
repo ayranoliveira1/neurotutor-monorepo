@@ -1,5 +1,7 @@
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { PlansPageContent } from '@/components/admin/plans-page-content'
+import { PlansPageSkeleton } from '@/components/admin/plans-page-skeleton'
 
 export const metadata: Metadata = {
   title: 'Planos | Admin | NeuroTutor',
@@ -8,7 +10,9 @@ export const metadata: Metadata = {
 export default function PlansPage() {
   return (
     <div className="space-y-6">
-      <PlansPageContent />
+      <Suspense fallback={<PlansPageSkeleton />}>
+        <PlansPageContent />
+      </Suspense>
     </div>
   )
 }
