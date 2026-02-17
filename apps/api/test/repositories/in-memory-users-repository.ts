@@ -107,4 +107,8 @@ export class InMemoryUsersRepository implements UsersRepository {
   async delete(id: string): Promise<void> {
     this.items = this.items.filter((item) => item.id.toString() !== id)
   }
+
+  async findAllIds(): Promise<string[]> {
+    return this.items.map((item) => item.id.toString())
+  }
 }

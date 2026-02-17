@@ -6,6 +6,7 @@ import { CryptographyModule } from './infra/cryptography/cryptography.module'
 import { ThrottlerModule } from '@nestjs/throttler'
 import { GuardsModule } from './infra/http/guards/guards.module'
 import { PaymentModule } from './infra/payment/payment.module'
+import { WebSocketModule } from './infra/web-socket/web-socket.module'
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PaymentModule } from './infra/payment/payment.module'
     HttpModule,
     CryptographyModule,
     PaymentModule,
+    WebSocketModule,
   ],
 })
 export class AppModule { }

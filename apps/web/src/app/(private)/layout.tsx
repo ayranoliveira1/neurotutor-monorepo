@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/actions/auth/get-current-user'
 import { generateClearSessionToken } from '@/lib/clear-session-token'
 import { ThemeProvider } from '@/providers/theme-provider'
+import { SocketProvider } from '@/providers/socket-provider'
 import { SidebarProvider } from '@/components/layout/sidebar-context'
 import { Sidebar } from '@/components/layout/sidebar'
 import { MobileSidebar } from '@/components/layout/mobile-sidebar'
@@ -24,17 +25,21 @@ export default async function PrivateLayout({
 
   return (
     <ThemeProvider>
-      <SidebarProvider userRole={user?.role ?? null}>
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <MobileSidebar />
-          <div className="flex flex-1 flex-col">
-            {user && <AppHeader user={user} />}
-            <main className="flex-1 bg-muted/30 p-4 md:p-6">{children}</main>
+      <SocketProvider userId={user?.id ?? ''}>
+        <SidebarProvider userRole={user?.role ?? null}>
+          <div className="flex min-h-screen">
+            <Sidebar />
+            <MobileSidebar />
+            <div className="flex flex-1 flex-col">
+              {user && <AppHeader user={user} />}
+              <main className="flex-1 bg-muted/30 p-4 md:p-6">
+                {children}
+              </main>
+            </div>
           </div>
-        </div>
-        {user && <RatingPopup userId={user.id} />}
-      </SidebarProvider>
+          {user && <RatingPopup userId={user.id} />}
+        </SidebarProvider>
+      </SocketProvider>
     </ThemeProvider>
   )
 }

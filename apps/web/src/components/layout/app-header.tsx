@@ -1,13 +1,15 @@
 'use client'
 
-import { Bell, PanelLeftClose, PanelLeftOpen, Menu } from 'lucide-react'
+import { PanelLeftClose, PanelLeftOpen, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { UserDropdown } from './user-dropdown'
 import { ThemeToggle } from './theme-toggle'
+import { NotificationBell } from './notification-bell'
 import { useSidebar } from './sidebar-context'
 
 interface AppHeaderProps {
   user: {
+    id: string
     name: string
     email: string
     image: string | null
@@ -47,15 +49,15 @@ export function AppHeader({ user }: AppHeaderProps) {
 
       <div className="flex items-center gap-1">
         <ThemeToggle />
-        <Button variant="ghost" size="icon" aria-label="Notificações">
-          <Bell className="h-4 w-4" />
-        </Button>
-        <UserDropdown
-          name={user.name}
-          email={user.email}
-          image={user.image}
-          subscriptionPlanName={user.subscription?.planName ?? null}
-        />
+        <NotificationBell userId={user.id} />
+        <div className="ml-2">
+          <UserDropdown
+            name={user.name}
+            email={user.email}
+            image={user.image}
+            subscriptionPlanName={user.subscription?.planName ?? null}
+          />
+        </div>
       </div>
     </header>
   )

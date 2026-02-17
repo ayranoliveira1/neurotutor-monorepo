@@ -112,4 +112,12 @@ export class PrismaUsersRepository implements UsersRepository {
       where: { id },
     })
   }
+
+  async findAllIds(): Promise<string[]> {
+    const users = await this.prisma.user.findMany({
+      select: { id: true },
+    })
+
+    return users.map((u) => u.id)
+  }
 }

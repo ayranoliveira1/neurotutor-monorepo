@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AppHeader } from '../app-header'
 import { SidebarProvider } from '../sidebar-context'
 
@@ -27,7 +28,22 @@ vi.mock('@/actions/auth/sign-out', () => ({
   signOutAction: vi.fn(),
 }))
 
+vi.mock('@/hooks/use-notifications-query', () => ({
+  useNotificationsQuery: () => ({
+    data: { notifications: [] },
+    isLoading: false,
+  }),
+}))
+
+vi.mock('next-safe-action/hooks', () => ({
+  useAction: () => ({
+    executeAsync: vi.fn(),
+    isPending: false,
+  }),
+}))
+
 const mockUser = {
+  id: 'user-1',
   name: 'Maria Silva',
   email: 'maria@email.com',
   image: null,
@@ -35,10 +51,15 @@ const mockUser = {
 }
 
 function renderHeader() {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
   return render(
-    <SidebarProvider>
-      <AppHeader user={mockUser} />
-    </SidebarProvider>
+    <QueryClientProvider client={queryClient}>
+      <SidebarProvider>
+        <AppHeader user={mockUser} />
+      </SidebarProvider>
+    </QueryClientProvider>
   )
 }
 
