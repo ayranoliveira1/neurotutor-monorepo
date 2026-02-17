@@ -15,7 +15,7 @@ model User {
   image                  String?
   createdAt              DateTime               @default(now())
   updatedAt              DateTime               @updatedAt
-  role                   Roles                  @default(Student)
+  role                   Roles                  @default(STUDENT)
   address                String?
   addressNumber          String?
   cpfCnpj                String?
@@ -25,6 +25,7 @@ model User {
   accounts               Account[]
   sessions               Session[]
   subscriptions          Subscription[]
+  ratings                Rating[]
 
   @@map("users")
 }
@@ -35,7 +36,7 @@ model Plan {
   slug          String         @unique
   priceCents    Int
   description   String?
-  cycle         BillingCycle   @default(Monthly)
+  cycle         BillingCycle   @default(MONTHLY)
   active        Boolean        @default(true)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -124,14 +125,36 @@ model Verification {
   @@map("verifications")
 }
 
+model Rating {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  rating      Int
+  description String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ratings")
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  destination Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("notifications")
+}
+
 enum BillingCycle {
-  Weekly
-  Monthly
-  Yearly
+  WEEKLY
+  MONTHLY
+  YEARLY
 }
 
 enum Roles {
-  Admin
-  Student
-  Teacher
+  ADMIN
+  STUDENT
+  TEACHER
 }

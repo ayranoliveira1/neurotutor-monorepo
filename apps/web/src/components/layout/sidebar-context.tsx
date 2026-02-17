@@ -7,11 +7,18 @@ interface SidebarContextValue {
   toggleCollapsed: () => void
   mobileOpen: boolean
   setMobileOpen: (open: boolean) => void
+  userRole: string | null
 }
 
 const SidebarContext = createContext<SidebarContextValue | null>(null)
 
-export function SidebarProvider({ children }: { children: ReactNode }) {
+export function SidebarProvider({
+  children,
+  userRole = null,
+}: {
+  children: ReactNode
+  userRole?: string | null
+}) {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -22,6 +29,7 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
         toggleCollapsed: () => setCollapsed((c) => !c),
         mobileOpen,
         setMobileOpen,
+        userRole,
       }}
     >
       {children}

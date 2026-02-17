@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 const publicRoutes = ['/login', '/register']
 const protectedRoutes = [
   '/dashboard',
+  '/admin',
 
   '/fluxo-de-caixa',
   '/notas-fiscais',
@@ -33,7 +34,7 @@ export default async function middleware(req: NextRequest) {
   }
 
   if (publicRoutes.includes(path) && sessionCookie) {
-    return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+    return NextResponse.redirect(new URL('/home', req.nextUrl))
   }
 
   return NextResponse.next()

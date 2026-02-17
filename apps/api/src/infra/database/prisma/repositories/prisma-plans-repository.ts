@@ -33,16 +33,14 @@ export class PrismaPlansRepository implements PlansRepository {
 
   async findAll(): Promise<Plan[]> {
     const plans = await this.prisma.plan.findMany({
-      where: { active: true },
-      orderBy: { priceCents: 'asc' },
+      orderBy: { priceCents: 'desc' },
     })
-    return plans.map(PlanMapper.toDomain)
+    return plans.map((plan) => PlanMapper.toDomain(plan))
   }
 
   async delete(id: string): Promise<void> {
-    await this.prisma.plan.update({
+    await this.prisma.plan.delete({
       where: { id },
-      data: { active: false },
     })
   }
 }

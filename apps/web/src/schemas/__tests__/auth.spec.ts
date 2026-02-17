@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { signInSchema, signUpSchema } from '../auth'
+import { signInSchema, signUpSchema, signUpFormSchema } from '../auth'
 
 describe('signInSchema', () => {
   it('should validate a correct sign-in input', () => {
@@ -125,6 +125,48 @@ describe('signUpSchema', () => {
     if (!result.success) {
       expect(result.error.flatten().fieldErrors.email).toContain(
         'E-mail inválido',
+      )
+    }
+  })
+})
+
+describe('signUpFormSchema', () => {
+  it('should validate when passwords match', () => {
+    const result = signUpFormSchema.safeParse({
+      name: 'Maria Silva',
+      email: 'maria@email.com',
+      password: '12345678',
+      confirmPassword: '12345678',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('should reject when passwords do not match', () => {
+    const result = signUpFormSchema.safeParse({
+      name: 'Maria Silva',
+      email: 'maria@email.com',
+      password: '12345678',
+      confirmPassword: '87654321',
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.confirmPassword).toContain(
+        'As senhas não coincidem',
+      )
+    }
+  })
+
+  it('should reject empty confirmPassword', () => {
+    const result = signUpFormSchema.safeParse({
+      name: 'Maria Silva',
+      email: 'maria@email.com',
+      password: '12345678',
+      confirmPassword: '',
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.confirmPassword).toContain(
+        'Confirmação de senha é obrigatória',
       )
     }
   })

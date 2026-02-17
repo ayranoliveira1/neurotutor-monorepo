@@ -11,7 +11,7 @@ import z from 'zod'
 const AdminCreateUserSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
-  password: z.string().min(6),
+  password: z.string().min(8),
   planSlug: z.string().min(1),
   durationDays: z.number().int().min(1),
   role: z.nativeEnum(Role).optional(),

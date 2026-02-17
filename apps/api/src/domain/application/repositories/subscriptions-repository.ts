@@ -6,4 +6,10 @@ export abstract class subscriptionsRepository {
   abstract findByUserId(userId: string): Promise<Subscription | null>
   abstract findById(id: string): Promise<Subscription | null>
   abstract findByExternalId(externalId: string): Promise<Subscription | null>
+  abstract existsByPlanId(planId: string): Promise<boolean>
+  abstract findPlanIdsWithSubscriptions(): Promise<string[]>
+  abstract updatePlanNameByPlanId(
+    planId: string,
+    planName: string,
+  ): Promise<void>
 }

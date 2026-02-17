@@ -6,6 +6,18 @@ import {
   Roles as PrismaRole,
 } from '@/infra/generated/prisma'
 
+const roleToDomain: Record<PrismaRole, Role> = {
+  [PrismaRole.ADMIN]: Role.ADMIN,
+  [PrismaRole.STUDENT]: Role.STUDENT,
+  [PrismaRole.TEACHER]: Role.TEACHER,
+}
+
+const roleToPrisma: Record<Role, PrismaRole> = {
+  [Role.ADMIN]: PrismaRole.ADMIN,
+  [Role.STUDENT]: PrismaRole.STUDENT,
+  [Role.TEACHER]: PrismaRole.TEACHER,
+}
+
 export class UsersMapper {
   static toDomain(raw: PrismaUser): User {
     return User.create(
@@ -14,7 +26,7 @@ export class UsersMapper {
         email: raw.email,
         emailVerified: raw.emailVerified,
         image: raw.image,
-        role: raw.role ? this.mapRoleToDomain(raw.role) : null,
+        role: raw.role ? roleToDomain[raw.role] : null,
         cpfCnpj: raw.cpfCnpj || undefined,
         phone: raw.phone || undefined,
         address: raw.address || undefined,
@@ -41,35 +53,9 @@ export class UsersMapper {
       province: user.province,
       postalCode: user.postalCode,
       image: user.image,
-      role: user.role ? this.mapRoleToPrisma(user.role) : undefined,
+      role: user.role ? roleToPrisma[user.role] : undefined,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
-    }
-  }
-
-  private static mapRoleToPrisma(role: Role): PrismaRole {
-    switch (role) {
-      case Role.ADMIN:
-        return PrismaRole.Admin
-      case Role.STUDENT:
-        return PrismaRole.Student
-      case Role.TEACHER:
-        return PrismaRole.Teacher
-      default:
-        throw new Error(`Invalid domain role: ${role}`)
-    }
-  }
-
-  private static mapRoleToDomain(role: PrismaRole): Role {
-    switch (role) {
-      case PrismaRole.Admin:
-        return Role.ADMIN
-      case PrismaRole.Student:
-        return Role.STUDENT
-      case PrismaRole.Teacher:
-        return Role.TEACHER
-      default:
-        throw new Error(`Invalid prisma role: ${role}`)
     }
   }
 }

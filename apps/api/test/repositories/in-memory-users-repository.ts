@@ -4,9 +4,14 @@ import {
   UsersRepository,
 } from '@/domain/application/repositories/users-repository'
 import { User } from '@/domain/entreprise/entities/user'
+import { InMemorySubscriptionsRepository } from './in-memory-subscriptions-repository'
 
 export class InMemoryUsersRepository implements UsersRepository {
   public items: User[] = []
+
+  constructor(
+    private subscriptionsRepository?: InMemorySubscriptionsRepository
+  ) {}
 
   async save(user: User): Promise<void> {
     const index = this.items.findIndex(
@@ -36,6 +41,9 @@ export class InMemoryUsersRepository implements UsersRepository {
     search,
     startDate,
     endDate,
+    role,
+    active,
+    planId,
   }: FindManyUsersParams): Promise<UserPagination> {
     let filtered = this.items
 
@@ -54,11 +62,38 @@ export class InMemoryUsersRepository implements UsersRepository {
       filtered = filtered.filter((item) => item.createdAt <= endDate)
     }
 
+    if (role) {
+      filtered = filtered.filter((item) => item.role === role)
+    }
+
+    if (active !== undefined || planId) {
+      const results: User[] = []
+      for (const item of filtered) {
+        const sub = this.subscriptionsRepository
+          ? await this.subscriptionsRepository.findByUserId(item.id.toString())
+          : null
+        if (!sub) continue
+        if (active !== undefined && sub.active !== active) continue
+        if (planId && sub.planId.toString() !== planId) continue
+        results.push(item)
+      }
+      filtered = results
+    }
+
     filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 
     const totalItems = filtered.length
     const offset = (page - 1) * perPage
-    const users = filtered.slice(offset, offset + perPage)
+    const paged = filtered.slice(offset, offset + perPage)
+
+    const users = await Promise.all(
+      paged.map(async (user) => {
+        const subscription = this.subscriptionsRepository
+          ? await this.subscriptionsRepository.findByUserId(user.id.toString())
+          : null
+        return { user, subscription }
+      })
+    )
 
     return {
       users,
@@ -71,5 +106,9 @@ export class InMemoryUsersRepository implements UsersRepository {
 
   async delete(id: string): Promise<void> {
     this.items = this.items.filter((item) => item.id.toString() !== id)
+  }
+
+  async findAllIds(): Promise<string[]> {
+    return this.items.map((item) => item.id.toString())
   }
 }

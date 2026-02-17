@@ -44,6 +44,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --background: oklch(0.2223 0.01 250);
   --foreground: oklch(0.9551 0 0);
   --card: oklch(0.2568 0.012 250);
@@ -129,4 +130,31 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Minimal scrollbar – visible only on hover */
+.notification-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.notification-scroll:hover {
+  scrollbar-color: var(--muted-foreground) transparent;
+}
+
+.notification-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notification-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notification-scroll::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.notification-scroll:hover::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
 }

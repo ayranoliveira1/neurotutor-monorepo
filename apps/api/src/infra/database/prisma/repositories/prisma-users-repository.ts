@@ -5,6 +5,7 @@ import {
 } from '@/domain/application/repositories/users-repository'
 import { User } from '@/domain/entreprise/entities/user'
 import { UsersMapper } from '../mappers/prisma-users-mapper'
+import { SubscriptionsMapper } from '../mappers/prisma-subscriptions-mapper'
 import { PrismaService } from '../prisma.service'
 import { Injectable } from '@nestjs/common'
 import { Prisma } from '@/infra/generated/prisma'
@@ -43,6 +44,9 @@ export class PrismaUsersRepository implements UsersRepository {
     search,
     startDate,
     endDate,
+    role,
+    active,
+    planId,
   }: FindManyUsersParams): Promise<UserPagination> {
     const where: Prisma.UserWhereInput = {}
 
@@ -56,6 +60,17 @@ export class PrismaUsersRepository implements UsersRepository {
       if (endDate) where.createdAt.lte = endDate
     }
 
+    if (role) {
+      where.role = role as Prisma.EnumRolesFilter['equals']
+    }
+
+    if (active !== undefined || planId) {
+      const some: Prisma.SubscriptionWhereInput = {}
+      if (active !== undefined) some.active = active
+      if (planId) some.planId = planId
+      where.subscriptions = { some }
+    }
+
     const offset = (page - 1) * perPage
 
     const [users, totalItems] = await Promise.all([
@@ -64,12 +79,18 @@ export class PrismaUsersRepository implements UsersRepository {
         skip: offset,
         take: perPage,
         orderBy: { createdAt: 'desc' },
+        include: { subscriptions: true },
       }),
       this.prisma.user.count({ where }),
     ])
 
     return {
-      users: users.map(UsersMapper.toDomain),
+      users: users.map((raw) => ({
+        user: UsersMapper.toDomain(raw),
+        subscription: raw.subscriptions[0]
+          ? SubscriptionsMapper.toDomain(raw.subscriptions[0])
+          : null,
+      })),
       totalItems,
       totalPages: Math.ceil(totalItems / perPage),
       currentPage: page,
@@ -90,5 +111,13 @@ export class PrismaUsersRepository implements UsersRepository {
     await this.prisma.user.delete({
       where: { id },
     })
+  }
+
+  async findAllIds(): Promise<string[]> {
+    const users = await this.prisma.user.findMany({
+      select: { id: true },
+    })
+
+    return users.map((u) => u.id)
   }
 }
