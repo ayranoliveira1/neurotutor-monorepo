@@ -22,6 +22,10 @@ import {
   listQuestionsSchema,
   randomQuestionsSchema,
 } from './dto/list-questions.dto'
+import {
+  findByIdsSchema,
+  type FindByIdsDto,
+} from './dto/find-by-ids.dto'
 
 @Controller('questions')
 export class QuestionsController {
@@ -37,6 +41,12 @@ export class QuestionsController {
   async createMany(@Body() body: CreateQuestionDto[]) {
     const data = body.map((item) => createQuestionSchema.parse(item))
     return this.questionsService.createMany(data)
+  }
+
+  @Post('by-ids')
+  async findByIds(@Body() body: FindByIdsDto) {
+    const data = findByIdsSchema.parse(body)
+    return this.questionsService.findByIds(data.ids, data.includeAnswers)
   }
 
   @Get()
@@ -59,6 +69,16 @@ export class QuestionsController {
   @Get('origins')
   async getOrigins() {
     return this.questionsService.getOrigins()
+  }
+
+  @Get('categories')
+  async getCategories(@Query('subject') subject?: string) {
+    return this.questionsService.getCategories(subject)
+  }
+
+  @Get(':id/answer')
+  async getAnswer(@Param('id') id: string) {
+    return this.questionsService.getAnswer(id)
   }
 
   @Get(':id')
