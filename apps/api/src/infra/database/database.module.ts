@@ -12,6 +12,10 @@ import { RatingsRepository } from '@/domain/application/repositories/ratings-rep
 import { PrismaRatingsRepository } from './prisma/repositories/prisma-ratings-repository'
 import { NotificationsRepository } from '@/domain/application/repositories/notifications-repository'
 import { PrismaNotificationsRepository } from './prisma/repositories/prisma-notifications-repository'
+import { ExerciseListsRepository } from '@/domain/application/repositories/exercise-lists-repository'
+import { PrismaExerciseListsRepository } from './prisma/repositories/prisma-exercise-lists-repository'
+import { ExerciseAnswersRepository } from '@/domain/application/repositories/exercise-answers-repository'
+import { PrismaExerciseAnswersRepository } from './prisma/repositories/prisma-exercise-answers-repository'
 
 @Global()
 @Module({
@@ -47,6 +51,16 @@ import { PrismaNotificationsRepository } from './prisma/repositories/prisma-noti
       provide: NotificationsRepository,
       useClass: PrismaNotificationsRepository
     },
+
+    {
+      provide: ExerciseListsRepository,
+      useClass: PrismaExerciseListsRepository
+    },
+
+    {
+      provide: ExerciseAnswersRepository,
+      useClass: PrismaExerciseAnswersRepository
+    },
   ],
   exports: [
     PrismaService,
@@ -56,6 +70,8 @@ import { PrismaNotificationsRepository } from './prisma/repositories/prisma-noti
     PlansRepository,
     RatingsRepository,
     NotificationsRepository,
+    ExerciseListsRepository,
+    ExerciseAnswersRepository,
   ],
 })
 export class DatabaseModule { }
