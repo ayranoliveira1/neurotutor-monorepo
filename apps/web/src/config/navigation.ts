@@ -4,6 +4,7 @@ import {
   CreditCard,
   Star,
   Bell,
+  ClipboardList,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -22,7 +23,10 @@ export interface NavGroup {
 export const navigationGroups: NavGroup[] = [
   {
     title: 'Menu',
-    items: [{ label: 'Home', href: '/home', icon: Home }],
+    items: [
+      { label: 'Home', href: '/home', icon: Home },
+      { label: 'Listas de Exercícios', href: '/listas', icon: ClipboardList },
+    ],
   },
   {
     title: 'Administração',
