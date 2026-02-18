@@ -132,4 +132,60 @@ export class QuestionsService {
 
     return origins.map((o) => o.origin)
   }
+
+  async findByIds(ids: string[], includeAnswers = false) {
+    const select = includeAnswers
+      ? undefined
+      : {
+          id: true,
+          externalId: true,
+          statement: true,
+          imageUrl: true,
+          alternatives: true,
+          origin: true,
+          subject: true,
+          categories: true,
+          createdAt: true,
+          updatedAt: true,
+        }
+
+    const questions = await this.prisma.question.findMany({
+      where: { id: { in: ids } },
+      ...(select ? { select } : {}),
+    })
+
+    return questions
+  }
+
+  async getAnswer(id: string) {
+    const question = await this.prisma.question.findUnique({
+      where: { id },
+      select: { correctAnswer: true },
+    })
+
+    if (!question) {
+      throw new NotFoundException('Questão não encontrada')
+    }
+
+    return { correctAnswer: question.correctAnswer }
+  }
+
+  async getCategories(subject?: string) {
+    const where: Prisma.QuestionWhereInput = {}
+
+    if (subject) {
+      where.subject = { equals: subject, mode: 'insensitive' }
+    }
+
+    const questions = await this.prisma.question.findMany({
+      where,
+      select: { categories: true },
+    })
+
+    const allCategories = questions.flatMap(
+      (q) => q.categories as string[],
+    )
+
+    return [...new Set(allCategories)].sort()
+  }
 }
