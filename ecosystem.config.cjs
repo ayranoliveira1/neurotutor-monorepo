@@ -20,6 +20,16 @@ module.exports = {
       env: {
         NODE_ENV: "production"
       }
+    },
+    {
+      name: "questions-api",
+      cwd: "./apps/questions",
+      script: "dist/main.js",
+      exec_mode: "fork",
+      instances: 1,
+      env: {
+        NODE_ENV: "production",
+      }
     }
   ]
 };
