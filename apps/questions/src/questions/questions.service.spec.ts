@@ -229,4 +229,98 @@ describe('QuestionsService', () => {
       expect(result).toEqual(['ENEM 2025', 'FUVEST 2025'])
     })
   })
+
+  describe('findByIds', () => {
+    it('deve retornar questões sem correctAnswer por padrão', async () => {
+      mockPrisma.question.findMany.mockResolvedValue([
+        { id: 'uuid-1', statement: 'Q1', subject: 'Arte' },
+        { id: 'uuid-2', statement: 'Q2', subject: 'Inglês' },
+      ])
+
+      const result = await service.findByIds(['uuid-1', 'uuid-2'])
+
+      expect(result).toHaveLength(2)
+      expect(mockPrisma.question.findMany).toHaveBeenCalledWith({
+        where: { id: { in: ['uuid-1', 'uuid-2'] } },
+        select: {
+          id: true,
+          externalId: true,
+          statement: true,
+          imageUrl: true,
+          alternatives: true,
+          origin: true,
+          subject: true,
+          categories: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      })
+    })
+
+    it('deve retornar questões com correctAnswer quando includeAnswers=true', async () => {
+      mockPrisma.question.findMany.mockResolvedValue([
+        { id: 'uuid-1', statement: 'Q1', correctAnswer: 0 },
+      ])
+
+      const result = await service.findByIds(['uuid-1'], true)
+
+      expect(result).toHaveLength(1)
+      expect(mockPrisma.question.findMany).toHaveBeenCalledWith({
+        where: { id: { in: ['uuid-1'] } },
+      })
+    })
+  })
+
+  describe('getAnswer', () => {
+    it('deve retornar a resposta correta de uma questão', async () => {
+      mockPrisma.question.findUnique.mockResolvedValue({ correctAnswer: 2 })
+
+      const result = await service.getAnswer('uuid-1')
+
+      expect(result).toEqual({ correctAnswer: 2 })
+      expect(mockPrisma.question.findUnique).toHaveBeenCalledWith({
+        where: { id: 'uuid-1' },
+        select: { correctAnswer: true },
+      })
+    })
+
+    it('deve lançar NotFoundException se questão não existir', async () => {
+      mockPrisma.question.findUnique.mockResolvedValue(null)
+
+      await expect(service.getAnswer('invalid')).rejects.toThrow(
+        NotFoundException,
+      )
+    })
+  })
+
+  describe('getCategories', () => {
+    it('deve retornar categorias únicas e ordenadas', async () => {
+      mockPrisma.question.findMany.mockResolvedValue([
+        { categories: ['Geometria', 'Álgebra'] },
+        { categories: ['Álgebra', 'Trigonometria'] },
+        { categories: ['Geometria'] },
+      ])
+
+      const result = await service.getCategories()
+
+      expect(result).toEqual(['Geometria', 'Trigonometria', 'Álgebra'])
+      expect(mockPrisma.question.findMany).toHaveBeenCalledWith({
+        where: {},
+        select: { categories: true },
+      })
+    })
+
+    it('deve filtrar categorias por subject', async () => {
+      mockPrisma.question.findMany.mockResolvedValue([
+        { categories: ['Álgebra'] },
+      ])
+
+      await service.getCategories('Matemática')
+
+      expect(mockPrisma.question.findMany).toHaveBeenCalledWith({
+        where: { subject: { equals: 'Matemática', mode: 'insensitive' } },
+        select: { categories: true },
+      })
+    })
+  })
 })

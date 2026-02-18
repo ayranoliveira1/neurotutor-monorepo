@@ -7,6 +7,8 @@ export const envSchema = z.object({
   SUCCESS_REDIRECT_URL: z.string().url(),
   CANCEL_REDIRECT_URL: z.string().url(),
   ASSAAS_WEBHOOK_TOKEN: z.string(),
+  QUESTIONS_API_URL: z.string().url(),
+  QUESTIONS_API_KEY: z.string().optional().default(''),
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
     .optional()

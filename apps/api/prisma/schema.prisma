@@ -26,6 +26,7 @@ model User {
   sessions               Session[]
   subscriptions          Subscription[]
   ratings                Rating[]
+  exerciseLists          ExerciseList[]
 
   @@map("users")
 }
@@ -145,6 +146,47 @@ model Notification {
   updatedAt   DateTime @updatedAt
 
   @@map("notifications")
+}
+
+model ExerciseList {
+  id               String             @id @default(uuid())
+  userId           String             @map("user_id")
+  name             String
+  shuffleQuestions Boolean            @default(false) @map("shuffle_questions")
+  ignoreAnswered   Boolean            @default(false) @map("ignore_answered")
+  sections         Json
+  questionIds      Json               @map("question_ids")
+  totalQuestions   Int                @map("total_questions")
+  status           ExerciseListStatus @default(PENDING)
+  correctCount     Int?               @map("correct_count")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers          ExerciseAnswer[]
+
+  @@index([userId])
+  @@map("exercise_lists")
+}
+
+model ExerciseAnswer {
+  id             String       @id @default(uuid())
+  exerciseListId String       @map("exercise_list_id")
+  questionId     String       @map("question_id")
+  selectedAnswer Int          @map("selected_answer")
+  isCorrect        Boolean?   @map("is_correct")
+  timeSpentSeconds Int        @default(0) @map("time_spent_seconds")
+  createdAt        DateTime   @default(now()) @map("created_at")
+  exerciseList   ExerciseList @relation(fields: [exerciseListId], references: [id], onDelete: Cascade)
+
+  @@unique([exerciseListId, questionId])
+  @@index([exerciseListId])
+  @@map("exercise_answers")
+}
+
+enum ExerciseListStatus {
+  PENDING
+  IN_PROGRESS
+  FINISHED
 }
 
 enum BillingCycle {
