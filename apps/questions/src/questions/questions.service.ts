@@ -24,7 +24,7 @@ export class QuestionsService {
   }
 
   async findAll(params: ListQuestionsDto) {
-    const { page, perPage, subject, origin } = params
+    const { page, perPage, subject, origin, year, difficulty } = params
 
     const where: Prisma.QuestionWhereInput = {}
 
@@ -34,6 +34,14 @@ export class QuestionsService {
 
     if (origin) {
       where.origin = { contains: origin, mode: 'insensitive' }
+    }
+
+    if (year) {
+      where.year = year
+    }
+
+    if (difficulty) {
+      where.difficulty = difficulty
     }
 
     const [questions, total] = await Promise.all([
@@ -68,7 +76,7 @@ export class QuestionsService {
   }
 
   async findRandom(params: RandomQuestionsDto) {
-    const { count, subject, exclude } = params
+    const { count, subject, year, difficulty, exclude } = params
 
     const conditions: string[] = []
     const values: unknown[] = []
@@ -77,6 +85,18 @@ export class QuestionsService {
     if (subject) {
       conditions.push(`LOWER(subject) = LOWER($${paramIndex})`)
       values.push(subject)
+      paramIndex++
+    }
+
+    if (year) {
+      conditions.push(`year = $${paramIndex}`)
+      values.push(year)
+      paramIndex++
+    }
+
+    if (difficulty) {
+      conditions.push(`difficulty = $${paramIndex}`)
+      values.push(difficulty)
       paramIndex++
     }
 
@@ -145,6 +165,8 @@ export class QuestionsService {
           origin: true,
           subject: true,
           categories: true,
+          year: true,
+          difficulty: true,
           createdAt: true,
           updatedAt: true,
         }
@@ -168,6 +190,27 @@ export class QuestionsService {
     }
 
     return { correctAnswer: question.correctAnswer }
+  }
+
+  async getYears() {
+    const years = await this.prisma.question.findMany({
+      select: { year: true },
+      distinct: ['year'],
+      where: { year: { not: null } },
+      orderBy: { year: 'desc' },
+    })
+
+    return years.map((y) => y.year!).filter(Boolean)
+  }
+
+  async getDifficulties() {
+    const difficulties = await this.prisma.question.findMany({
+      select: { difficulty: true },
+      distinct: ['difficulty'],
+      where: { difficulty: { not: null } },
+    })
+
+    return difficulties.map((d) => d.difficulty!).filter(Boolean)
   }
 
   async getCategories(subject?: string) {
