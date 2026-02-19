@@ -13,6 +13,8 @@ export interface ExerciseListSection {
   origin?: string
   quantity: number
   categories?: string[]
+  year?: number
+  difficulty?: string
 }
 
 export interface ExerciseListProps {

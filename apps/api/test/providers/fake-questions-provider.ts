@@ -26,6 +26,8 @@ export class FakeQuestionsProvider implements QuestionsProvider {
       subject: override.subject ?? 'Matemática',
       categories: override.categories ?? ['Álgebra'],
       correctAnswer: override.correctAnswer ?? 0,
+      year: override.year ?? 2025,
+      difficulty: override.difficulty ?? 'MEDIUM',
       createdAt: override.createdAt ?? new Date(),
       updatedAt: override.updatedAt ?? new Date(),
     }
@@ -56,6 +58,14 @@ export class FakeQuestionsProvider implements QuestionsProvider {
       filtered = filtered.filter((q) =>
         q.categories.some((c) => cats.includes(c.toLowerCase())),
       )
+    }
+
+    if (params.year) {
+      filtered = filtered.filter((q) => q.year === params.year)
+    }
+
+    if (params.difficulty) {
+      filtered = filtered.filter((q) => q.difficulty === params.difficulty)
     }
 
     return filtered.slice(0, params.quantity).map(({ correctAnswer, ...q }) => q)
@@ -97,5 +107,19 @@ export class FakeQuestionsProvider implements QuestionsProvider {
     }
     const all = filtered.flatMap((q) => q.categories)
     return [...new Set(all)].sort()
+  }
+
+  async getYears(): Promise<number[]> {
+    const years = this.questions
+      .map((q) => q.year)
+      .filter((y): y is number => y != null)
+    return [...new Set(years)].sort((a, b) => b - a)
+  }
+
+  async getDifficulties(): Promise<string[]> {
+    const diffs = this.questions
+      .map((q) => q.difficulty)
+      .filter((d): d is string => d != null)
+    return [...new Set(diffs)]
   }
 }

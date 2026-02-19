@@ -34,4 +34,24 @@ export class ExerciseListFiltersController {
       data: categories,
     }
   }
+
+  @Get('years')
+  async years() {
+    const years = await this.questionsProvider.getYears()
+
+    return {
+      success: true,
+      data: years,
+    }
+  }
+
+  @Get('difficulties')
+  async difficulties() {
+    const difficulties = await this.questionsProvider.getDifficulties()
+
+    return {
+      success: true,
+      data: difficulties,
+    }
+  }
 }

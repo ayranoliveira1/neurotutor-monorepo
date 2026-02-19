@@ -9,6 +9,15 @@ export const exerciseListSectionSchema = z.object({
     .min(1, 'Mínimo de 1 questão')
     .max(100, 'Máximo de 100 questões'),
   categories: z.array(z.string()).optional(),
+  year: z.coerce
+    .number()
+    .int()
+    .optional()
+    .transform((v) => (v === 0 ? undefined : v)),
+  difficulty: z
+    .string()
+    .optional()
+    .transform((v) => (v === '' ? undefined : v)),
 })
 
 export const createExerciseListSchema = z.object({

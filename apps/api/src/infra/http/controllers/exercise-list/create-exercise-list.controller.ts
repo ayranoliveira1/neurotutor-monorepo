@@ -10,6 +10,8 @@ const sectionSchema = z.object({
   origin: z.string().optional(),
   quantity: z.number().int().min(1).max(100),
   categories: z.array(z.string()).optional(),
+  year: z.number().int().optional(),
+  difficulty: z.string().optional(),
 })
 
 const CreateExerciseListSchema = z.object({

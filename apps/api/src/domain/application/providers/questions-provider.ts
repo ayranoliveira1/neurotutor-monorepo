@@ -7,6 +7,8 @@ export interface QuestionData {
   origin: string
   subject: string
   categories: string[]
+  year?: number | null
+  difficulty?: string | null
   createdAt: Date
   updatedAt: Date
 }
@@ -19,6 +21,8 @@ export interface FindRandomQuestionsParams {
   subject: string
   origin?: string
   categories?: string[]
+  year?: number
+  difficulty?: string
   quantity: number
   exclude?: string[]
 }
@@ -40,4 +44,8 @@ export abstract class QuestionsProvider {
   abstract getOrigins(): Promise<string[]>
 
   abstract getCategories(subject?: string): Promise<string[]>
+
+  abstract getYears(): Promise<number[]>
+
+  abstract getDifficulties(): Promise<string[]>
 }

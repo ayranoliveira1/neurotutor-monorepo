@@ -30,6 +30,8 @@ export class HttpQuestionsProvider implements QuestionsProvider {
       params: {
         count: params.quantity,
         subject: params.subject,
+        year: params.year,
+        difficulty: params.difficulty,
         exclude: params.exclude,
       },
     })
@@ -93,6 +95,21 @@ export class HttpQuestionsProvider implements QuestionsProvider {
       headers: this.headers,
       params: subject ? { subject } : {},
     })
+    return data
+  }
+
+  async getYears(): Promise<number[]> {
+    const { data } = await axios.get(`${this.baseUrl}/questions/years`, {
+      headers: this.headers,
+    })
+    return data
+  }
+
+  async getDifficulties(): Promise<string[]> {
+    const { data } = await axios.get(
+      `${this.baseUrl}/questions/difficulties`,
+      { headers: this.headers },
+    )
     return data
   }
 }

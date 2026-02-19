@@ -18,7 +18,17 @@ import { Label } from '@/components/ui/label'
 import { Plus, Trash2 } from 'lucide-react'
 import { createExerciseListSchema } from '@/schemas/exercise-list'
 import { createExerciseListAction } from '@/actions/exercise-list/create-exercise-list'
-import { useSubjectsQuery } from '@/hooks/use-questions-metadata-query'
+import {
+  useSubjectsQuery,
+  useYearsQuery,
+  useDifficultiesQuery,
+} from '@/hooks/use-questions-metadata-query'
+
+const difficultyLabels: Record<string, string> = {
+  EASY: 'Fácil',
+  MEDIUM: 'Médio',
+  HARD: 'Difícil',
+}
 
 interface CreateExerciseListDialogProps {
   open: boolean
@@ -33,6 +43,8 @@ export function CreateExerciseListDialog({
 }: CreateExerciseListDialogProps) {
   const router = useRouter()
   const { data: subjects } = useSubjectsQuery()
+  const { data: years } = useYearsQuery()
+  const { data: difficulties } = useDifficultiesQuery()
 
   const { form, handleSubmitWithAction, action } = useHookFormAction(
     createExerciseListAction,
@@ -181,6 +193,39 @@ export function CreateExerciseListDialog({
                         {errors.sections[index].quantity?.message}
                       </p>
                     )}
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label className="text-xs">Ano</Label>
+                    <select
+                      {...register(`sections.${index}.year`, {
+                        setValueAs: (v: string) =>
+                          v === '' ? undefined : Number(v),
+                      })}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <option value="">Todos</option>
+                      {years?.map((y) => (
+                        <option key={y} value={y}>
+                          {y}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <Label className="text-xs">Dificuldade</Label>
+                    <select
+                      {...register(`sections.${index}.difficulty`)}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <option value="">Todas</option>
+                      {difficulties?.map((d) => (
+                        <option key={d} value={d}>
+                          {difficultyLabels[d] ?? d}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               </div>

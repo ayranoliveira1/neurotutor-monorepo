@@ -109,6 +109,32 @@ describe('QuestionsService', () => {
         }),
       )
     })
+
+    it('deve filtrar por year', async () => {
+      mockPrisma.question.findMany.mockResolvedValue([])
+      mockPrisma.question.count.mockResolvedValue(0)
+
+      await service.findAll({ page: 1, perPage: 20, year: 2025 })
+
+      expect(mockPrisma.question.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { year: 2025 },
+        }),
+      )
+    })
+
+    it('deve filtrar por difficulty', async () => {
+      mockPrisma.question.findMany.mockResolvedValue([])
+      mockPrisma.question.count.mockResolvedValue(0)
+
+      await service.findAll({ page: 1, perPage: 20, difficulty: 'EASY' })
+
+      expect(mockPrisma.question.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { difficulty: 'EASY' },
+        }),
+      )
+    })
   })
 
   describe('findById', () => {
@@ -163,6 +189,59 @@ describe('QuestionsService', () => {
         'id-1',
         'id-2',
         5,
+      )
+    })
+
+    it('deve filtrar por year', async () => {
+      mockPrisma.$queryRawUnsafe.mockResolvedValue([])
+
+      await service.findRandom({
+        count: 5,
+        year: 2025,
+        exclude: [],
+      })
+
+      expect(mockPrisma.$queryRawUnsafe).toHaveBeenCalledWith(
+        expect.stringContaining('year = $1'),
+        2025,
+        5,
+      )
+    })
+
+    it('deve filtrar por difficulty', async () => {
+      mockPrisma.$queryRawUnsafe.mockResolvedValue([])
+
+      await service.findRandom({
+        count: 5,
+        difficulty: 'EASY',
+        exclude: [],
+      })
+
+      expect(mockPrisma.$queryRawUnsafe).toHaveBeenCalledWith(
+        expect.stringContaining('difficulty = $1'),
+        'EASY',
+        5,
+      )
+    })
+
+    it('deve combinar subject, year, difficulty e exclude', async () => {
+      mockPrisma.$queryRawUnsafe.mockResolvedValue([])
+
+      await service.findRandom({
+        count: 3,
+        subject: 'Matemática',
+        year: 2025,
+        difficulty: 'HARD',
+        exclude: ['id-1'],
+      })
+
+      expect(mockPrisma.$queryRawUnsafe).toHaveBeenCalledWith(
+        expect.stringContaining('LOWER(subject) = LOWER($1)'),
+        'Matemática',
+        2025,
+        'HARD',
+        'id-1',
+        3,
       )
     })
   })
@@ -251,6 +330,8 @@ describe('QuestionsService', () => {
           origin: true,
           subject: true,
           categories: true,
+          year: true,
+          difficulty: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -290,6 +371,44 @@ describe('QuestionsService', () => {
       await expect(service.getAnswer('invalid')).rejects.toThrow(
         NotFoundException,
       )
+    })
+  })
+
+  describe('getYears', () => {
+    it('deve retornar lista de anos distintos em ordem decrescente', async () => {
+      mockPrisma.question.findMany.mockResolvedValue([
+        { year: 2026 },
+        { year: 2025 },
+        { year: 2024 },
+      ])
+
+      const result = await service.getYears()
+
+      expect(result).toEqual([2026, 2025, 2024])
+      expect(mockPrisma.question.findMany).toHaveBeenCalledWith({
+        select: { year: true },
+        distinct: ['year'],
+        where: { year: { not: null } },
+        orderBy: { year: 'desc' },
+      })
+    })
+  })
+
+  describe('getDifficulties', () => {
+    it('deve retornar lista de dificuldades distintas', async () => {
+      mockPrisma.question.findMany.mockResolvedValue([
+        { difficulty: 'EASY' },
+        { difficulty: 'MEDIUM' },
+      ])
+
+      const result = await service.getDifficulties()
+
+      expect(result).toEqual(['EASY', 'MEDIUM'])
+      expect(mockPrisma.question.findMany).toHaveBeenCalledWith({
+        select: { difficulty: true },
+        distinct: ['difficulty'],
+        where: { difficulty: { not: null } },
+      })
     })
   })
 

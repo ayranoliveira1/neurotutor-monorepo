@@ -71,6 +71,16 @@ export class QuestionsController {
     return this.questionsService.getOrigins()
   }
 
+  @Get('years')
+  async getYears() {
+    return this.questionsService.getYears()
+  }
+
+  @Get('difficulties')
+  async getDifficulties() {
+    return this.questionsService.getDifficulties()
+  }
+
   @Get('categories')
   async getCategories(@Query('subject') subject?: string) {
     return this.questionsService.getCategories(subject)

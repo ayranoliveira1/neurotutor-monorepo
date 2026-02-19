@@ -11,9 +11,35 @@ interface RawQuestion {
   imagem: string | null
   alternativas: string[]
   origem: string
+  ano: number
+  dificuldade: string
+  dificuldadeNivel: number
   disciplina: string
   categorias: string[]
   respostaCorreta: number
+}
+
+type Difficulty = 'EASY' | 'MEDIUM' | 'HARD'
+
+function mapDifficulty(nivel: number, texto: string): Difficulty {
+  if (nivel === 1 || texto === 'Médio') return 'MEDIUM'
+  if (nivel === 2 || texto === 'Difícil') return 'HARD'
+  return 'EASY'
+}
+
+function mapQuestion(q: RawQuestion) {
+  return {
+    externalId: q.questaoId,
+    statement: q.enunciado,
+    imageUrl: q.imagem || null,
+    alternatives: q.alternativas,
+    origin: q.origem,
+    subject: q.disciplina,
+    categories: q.categorias,
+    correctAnswer: q.respostaCorreta,
+    year: q.ano,
+    difficulty: mapDifficulty(q.dificuldadeNivel, q.dificuldade),
+  }
 }
 
 async function main() {
@@ -24,25 +50,54 @@ async function main() {
   const jsonPath = resolve(__dirname, '../../data/bancoQuestoesCompleto.json')
   const raw: RawQuestion[] = JSON.parse(readFileSync(jsonPath, 'utf8'))
 
-  console.log(`Importando ${raw.length} questões...`)
+  console.log(`Processando ${raw.length} questões...\n`)
 
-  const data = raw.map((q) => ({
-    externalId: q.questaoId,
-    statement: q.enunciado,
-    imageUrl: q.imagem || null,
-    alternatives: q.alternativas,
-    origin: q.origem,
-    subject: q.disciplina,
-    categories: q.categorias,
-    correctAnswer: q.respostaCorreta,
-  }))
+  let created = 0
+  let updated = 0
+  let unchanged = 0
 
-  const result = await prisma.question.createMany({
-    data,
-    skipDuplicates: true,
-  })
+  for (const q of raw) {
+    const mapped = mapQuestion(q)
 
-  console.log(`${result.count} questões importadas com sucesso.`)
+    const existing = await prisma.question.findUnique({
+      where: { externalId: mapped.externalId },
+    })
+
+    if (!existing) {
+      await prisma.question.create({ data: mapped })
+      created++
+      continue
+    }
+
+    const hasChanges =
+      existing.statement !== mapped.statement ||
+      existing.imageUrl !== mapped.imageUrl ||
+      JSON.stringify(existing.alternatives) !==
+        JSON.stringify(mapped.alternatives) ||
+      existing.origin !== mapped.origin ||
+      existing.subject !== mapped.subject ||
+      JSON.stringify(existing.categories) !==
+        JSON.stringify(mapped.categories) ||
+      existing.correctAnswer !== mapped.correctAnswer ||
+      existing.year !== mapped.year ||
+      existing.difficulty !== mapped.difficulty
+
+    if (hasChanges) {
+      await prisma.question.update({
+        where: { externalId: mapped.externalId },
+        data: mapped,
+      })
+      updated++
+    } else {
+      unchanged++
+    }
+  }
+
+  console.log('Importação concluída:')
+  console.log(`  - ${created} questões novas`)
+  console.log(`  - ${updated} questões atualizadas`)
+  console.log(`  - ${unchanged} questões sem alteração`)
+  console.log(`  Total: ${raw.length} questões processadas`)
 
   await prisma.$disconnect()
   await pool.end()
