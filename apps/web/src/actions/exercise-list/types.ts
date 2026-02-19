@@ -3,6 +3,8 @@ export interface ExerciseListSection {
   origin?: string
   quantity: number
   categories?: string[]
+  year?: number
+  difficulty?: string
 }
 
 export interface ExerciseListItem {
@@ -29,6 +31,8 @@ export interface QuestionData {
   origin: string
   subject: string
   categories: string[]
+  year?: number | null
+  difficulty?: string | null
   createdAt: string
   updatedAt: string
 }
