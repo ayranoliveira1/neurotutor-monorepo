@@ -45,6 +45,8 @@ export class CreateExerciseListUseCase {
         subject: section.subject,
         origin: section.origin,
         categories: section.categories,
+        year: section.year,
+        difficulty: section.difficulty,
         quantity: section.quantity,
         exclude: allQuestionIds,
       })
