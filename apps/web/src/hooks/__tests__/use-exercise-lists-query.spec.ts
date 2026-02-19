@@ -53,6 +53,28 @@ describe('useExerciseListsQuery', () => {
     expect(mockFetchLists).toHaveBeenCalledWith({ page: 2, perPage: 10 })
   })
 
+  it('deve passar parâmetros de filtro', async () => {
+    mockFetchLists.mockResolvedValueOnce(mockData)
+
+    const params = {
+      page: 1,
+      perPage: 9,
+      search: 'matemática',
+      status: 'FINISHED',
+      startDate: '2025-01-01',
+      endDate: '2025-12-31',
+    }
+
+    const { result } = renderHook(
+      () => useExerciseListsQuery(params),
+      { wrapper: createWrapper() },
+    )
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+
+    expect(mockFetchLists).toHaveBeenCalledWith(params)
+  })
+
   it('deve retornar dados com sucesso', async () => {
     mockFetchLists.mockResolvedValueOnce(mockData)
 

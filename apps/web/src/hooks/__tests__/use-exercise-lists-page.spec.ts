@@ -86,6 +86,43 @@ describe('useExerciseListsPage', () => {
     expect(result.current).toBeDefined()
   })
 
+  it('deve passar filtros dos searchParams para a query', () => {
+    mockUseSearchParams.mockReturnValue(
+      new URLSearchParams(
+        'page=1&search=matemática&status=FINISHED&startDate=2025-01-01&endDate=2025-12-31',
+      ) as never,
+    )
+
+    renderHook(() => useExerciseListsPage(), {
+      wrapper: createWrapper(),
+    })
+
+    expect(mockFetchLists).toHaveBeenCalledWith({
+      page: 1,
+      perPage: 9,
+      search: 'matemática',
+      status: 'FINISHED',
+      startDate: '2025-01-01',
+      endDate: '2025-12-31',
+    })
+  })
+
+  it('não deve incluir filtros vazios nos params', () => {
+    mockUseSearchParams.mockReturnValue(
+      new URLSearchParams('page=1&status=PENDING') as never,
+    )
+
+    renderHook(() => useExerciseListsPage(), {
+      wrapper: createWrapper(),
+    })
+
+    expect(mockFetchLists).toHaveBeenCalledWith({
+      page: 1,
+      perPage: 9,
+      status: 'PENDING',
+    })
+  })
+
   it('deve controlar createOpen com openCreateDialog', () => {
     const { result } = renderHook(() => useExerciseListsPage(), {
       wrapper: createWrapper(),
