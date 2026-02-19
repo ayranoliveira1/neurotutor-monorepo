@@ -22,11 +22,29 @@ export class InMemoryExerciseListsRepository
   async findManyByUserId(
     params: FindManyExerciseListsParams,
   ): Promise<ExerciseListPagination> {
-    const { userId, page, perPage } = params
+    const { userId, page, perPage, search, status, startDate, endDate } = params
 
-    const filtered = this.items.filter(
+    let filtered = this.items.filter(
       (i) => i.userId.toString() === userId,
     )
+
+    if (search) {
+      filtered = filtered.filter((i) =>
+        i.name.toLowerCase().includes(search.toLowerCase()),
+      )
+    }
+
+    if (status) {
+      filtered = filtered.filter((i) => i.status === status)
+    }
+
+    if (startDate) {
+      filtered = filtered.filter((i) => i.createdAt >= startDate)
+    }
+
+    if (endDate) {
+      filtered = filtered.filter((i) => i.createdAt <= endDate)
+    }
 
     const totalItems = filtered.length
     const exerciseLists = filtered.slice((page - 1) * perPage, page * perPage)
