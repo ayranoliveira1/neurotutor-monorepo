@@ -40,6 +40,33 @@ vi.mock('@/components/ui/button', () => ({
   }) => <button onClick={onClick}>{children}</button>,
 }))
 
+vi.mock('framer-motion', () => ({
+  motion: {
+    div: ({
+      children,
+      className,
+      ...props
+    }: {
+      children: React.ReactNode
+      className?: string
+    }) => <div className={className}>{children}</div>,
+    h3: ({
+      children,
+      className,
+    }: {
+      children: React.ReactNode
+      className?: string
+    }) => <h3 className={className}>{children}</h3>,
+    p: ({
+      children,
+      className,
+    }: {
+      children: React.ReactNode
+      className?: string
+    }) => <p className={className}>{children}</p>,
+  },
+}))
+
 vi.mock('@/components/ui/dropdown-menu', () => ({
   DropdownMenu: ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
@@ -78,11 +105,34 @@ const makeExerciseListItem = (
 })
 
 describe('ExerciseListsTable', () => {
-  it('deve exibir mensagem quando não há listas', () => {
-    render(<ExerciseListsTable exerciseLists={[]} onDelete={vi.fn()} />)
+  it('deve exibir empty state convidando a criar lista quando não há filtros', () => {
+    render(
+      <ExerciseListsTable
+        exerciseLists={[]}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(
-      screen.getByText('Nenhuma lista de exercícios encontrada.'),
+      screen.getByText('Comece sua jornada de estudos!'),
+    ).toBeInTheDocument()
+    expect(screen.getByText('Criar primeira lista')).toBeInTheDocument()
+  })
+
+  it('deve exibir empty state de filtros quando há filtros ativos', () => {
+    render(
+      <ExerciseListsTable
+        exerciseLists={[]}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={true}
+      />,
+    )
+
+    expect(
+      screen.getByText('Nenhum resultado encontrado'),
     ).toBeInTheDocument()
   })
 
@@ -93,7 +143,14 @@ describe('ExerciseListsTable', () => {
       makeExerciseListItem({ id: 'list-3', name: 'Lista de História' }),
     ]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('Lista de Matemática')).toBeInTheDocument()
     expect(screen.getByText('Lista de Português')).toBeInTheDocument()
@@ -103,7 +160,14 @@ describe('ExerciseListsTable', () => {
   it('deve exibir badge de status Pendente', () => {
     const lists = [makeExerciseListItem({ status: 'PENDING' })]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('Pendente')).toBeInTheDocument()
   })
@@ -111,7 +175,14 @@ describe('ExerciseListsTable', () => {
   it('deve exibir badge de status Em andamento', () => {
     const lists = [makeExerciseListItem({ status: 'IN_PROGRESS' })]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('Em andamento')).toBeInTheDocument()
   })
@@ -125,7 +196,14 @@ describe('ExerciseListsTable', () => {
       }),
     ]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('Finalizada')).toBeInTheDocument()
   })
@@ -139,7 +217,14 @@ describe('ExerciseListsTable', () => {
       }),
     ]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('70% (7/10)')).toBeInTheDocument()
   })
@@ -154,7 +239,14 @@ describe('ExerciseListsTable', () => {
       }),
     ]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     const badge = screen.getByText('10% (1/10)')
     expect(badge.className).toContain('bg-red-100')
@@ -163,7 +255,14 @@ describe('ExerciseListsTable', () => {
   it('deve exibir "Resolver" no dropdown quando status é PENDING', () => {
     const lists = [makeExerciseListItem({ status: 'PENDING' })]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('Resolver')).toBeInTheDocument()
   })
@@ -171,7 +270,14 @@ describe('ExerciseListsTable', () => {
   it('deve exibir "Continuar resolvendo" no dropdown quando status é IN_PROGRESS', () => {
     const lists = [makeExerciseListItem({ status: 'IN_PROGRESS' })]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('Continuar resolvendo')).toBeInTheDocument()
   })
@@ -186,7 +292,14 @@ describe('ExerciseListsTable', () => {
       }),
     ]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('Tempo total')).toBeInTheDocument()
     expect(screen.getByText('5min')).toBeInTheDocument()
@@ -203,7 +316,14 @@ describe('ExerciseListsTable', () => {
       }),
     ]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('Tempo total')).toBeInTheDocument()
     expect(screen.getByText('Média por questão')).toBeInTheDocument()
@@ -220,7 +340,14 @@ describe('ExerciseListsTable', () => {
       }),
     ]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('Tempo total')).toBeInTheDocument()
     expect(screen.getAllByText('Não finalizada')).toHaveLength(2)
@@ -236,7 +363,14 @@ describe('ExerciseListsTable', () => {
       }),
     ]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('Matemática')).toBeInTheDocument()
     expect(screen.getByText('Português')).toBeInTheDocument()
@@ -254,7 +388,14 @@ describe('ExerciseListsTable', () => {
       }),
     ]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     expect(screen.getByText('Matemática')).toBeInTheDocument()
     expect(screen.getByText('Português')).toBeInTheDocument()
@@ -273,7 +414,14 @@ describe('ExerciseListsTable', () => {
       }),
     ]
 
-    render(<ExerciseListsTable exerciseLists={lists} onDelete={vi.fn()} />)
+    render(
+      <ExerciseListsTable
+        exerciseLists={lists}
+        onDelete={vi.fn()}
+        onCreateNew={vi.fn()}
+        hasActiveFilters={false}
+      />,
+    )
 
     const badge = screen.getByText('90% (9/10)')
     expect(badge.className).toContain('bg-blue-100')
