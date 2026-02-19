@@ -15,6 +15,24 @@ interface QuestionCardProps {
 
 const letters = ['A', 'B', 'C', 'D', 'E']
 
+const difficultyConfig: Record<string, { label: string; className: string }> = {
+  EASY: {
+    label: 'Fácil',
+    className:
+      'border-green-200 bg-green-50 text-green-700 dark:border-green-800 dark:bg-green-950/20 dark:text-green-400',
+  },
+  MEDIUM: {
+    label: 'Médio',
+    className:
+      'border-yellow-200 bg-yellow-50 text-yellow-700 dark:border-yellow-800 dark:bg-yellow-950/20 dark:text-yellow-400',
+  },
+  HARD: {
+    label: 'Difícil',
+    className:
+      'border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-950/20 dark:text-red-400',
+  },
+}
+
 export function QuestionCard({
   question,
   questionNumber,
@@ -31,6 +49,17 @@ export function QuestionCard({
         <Badge variant="secondary">{question.subject}</Badge>
         {question.origin && (
           <Badge variant="secondary">{question.origin}</Badge>
+        )}
+        {question.year && (
+          <Badge variant="secondary">{question.year}</Badge>
+        )}
+        {question.difficulty && difficultyConfig[question.difficulty] && (
+          <Badge
+            variant="outline"
+            className={difficultyConfig[question.difficulty].className}
+          >
+            {difficultyConfig[question.difficulty].label}
+          </Badge>
         )}
       </div>
 

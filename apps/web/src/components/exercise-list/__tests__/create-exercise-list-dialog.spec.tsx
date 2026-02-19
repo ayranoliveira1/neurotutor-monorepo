@@ -7,6 +7,12 @@ vi.mock('@/hooks/use-questions-metadata-query', () => ({
   useSubjectsQuery: vi.fn(() => ({
     data: ['Matemática', 'Português'],
   })),
+  useYearsQuery: vi.fn(() => ({
+    data: [2026, 2025, 2024],
+  })),
+  useDifficultiesQuery: vi.fn(() => ({
+    data: ['EASY', 'MEDIUM', 'HARD'],
+  })),
 }))
 
 vi.mock('@/actions/exercise-list/create-exercise-list', () => ({
