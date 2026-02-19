@@ -21,10 +21,13 @@ import {
 import { formatTime } from '@/lib/format-time'
 import type { ExerciseListItem } from '@/actions/exercise-list/types'
 import { SubjectBadges } from './subject-badges'
+import { ExerciseListsEmptyState } from './exercise-lists-empty-state'
 
 interface ExerciseListsTableProps {
   exerciseLists: ExerciseListItem[]
   onDelete: (item: ExerciseListItem) => void
+  onCreateNew: () => void
+  hasActiveFilters: boolean
 }
 
 const statusConfig = {
@@ -35,7 +38,7 @@ const statusConfig = {
 
 function getListHref(item: ExerciseListItem) {
   if (item.status === 'FINISHED') {
-    return `/listas/${item.id}/result`
+    return `/listas/${item.id}/resultado`
   }
   return `/listas/${item.id}/resolver`
 }
@@ -53,12 +56,15 @@ function getPercentageBadgeClass(percentage: number) {
 export function ExerciseListsTable({
   exerciseLists,
   onDelete,
+  onCreateNew,
+  hasActiveFilters,
 }: ExerciseListsTableProps) {
   if (exerciseLists.length === 0) {
     return (
-      <div className="flex h-32 items-center justify-center rounded-md border text-muted-foreground">
-        Nenhuma lista de exercícios encontrada.
-      </div>
+      <ExerciseListsEmptyState
+        hasActiveFilters={hasActiveFilters}
+        onCreateNew={onCreateNew}
+      />
     )
   }
 
@@ -178,7 +184,7 @@ function ActionsDropdown({
         )}
         {item.status === 'FINISHED' && (
           <DropdownMenuItem asChild>
-            <Link href={`/listas/${item.id}/result`}>
+            <Link href={`/listas/${item.id}/resultado`}>
               <BarChart3 className="mr-2 h-4 w-4" />
               Ver resultado
             </Link>

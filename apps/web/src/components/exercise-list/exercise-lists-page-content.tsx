@@ -8,6 +8,7 @@ import { ExerciseListsPagination } from './exercise-lists-pagination'
 import { CreateExerciseListDialog } from './create-exercise-list-dialog'
 import { DeleteExerciseListDialog } from './delete-exercise-list-dialog'
 import { ExerciseListsPageSkeleton } from './exercise-lists-page-skeleton'
+import { ExerciseListsFilters } from './exercise-lists-filters'
 
 export function ExerciseListsPageContent() {
   const {
@@ -18,6 +19,7 @@ export function ExerciseListsPageContent() {
     totalPages,
     currentPage,
     totalItems,
+    hasActiveFilters,
     createOpen,
     setCreateOpen,
     deleteItem,
@@ -64,9 +66,13 @@ export function ExerciseListsPageContent() {
         </Button>
       </div>
 
+      {(totalItems > 0 || hasActiveFilters) && <ExerciseListsFilters />}
+
       <ExerciseListsTable
         exerciseLists={exerciseLists}
         onDelete={setDeleteItem}
+        onCreateNew={openCreateDialog}
+        hasActiveFilters={hasActiveFilters}
       />
 
       {totalPages > 1 && (

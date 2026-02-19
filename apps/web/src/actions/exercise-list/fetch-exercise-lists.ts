@@ -6,6 +6,10 @@ import type { ExerciseListItem } from './types'
 export interface FetchExerciseListsParams {
   page?: number
   perPage?: number
+  search?: string
+  status?: string
+  startDate?: string
+  endDate?: string
 }
 
 export interface FetchExerciseListsResponse {
@@ -22,6 +26,10 @@ export async function fetchExerciseListsAction(
 
   if (params.page) searchParams.set('page', String(params.page))
   if (params.perPage) searchParams.set('perPage', String(params.perPage))
+  if (params.search) searchParams.set('search', params.search)
+  if (params.status) searchParams.set('status', params.status)
+  if (params.startDate) searchParams.set('startDate', params.startDate)
+  if (params.endDate) searchParams.set('endDate', params.endDate)
 
   const query = searchParams.toString()
   const endpoint = `/exercise-lists${query ? `?${query}` : ''}`

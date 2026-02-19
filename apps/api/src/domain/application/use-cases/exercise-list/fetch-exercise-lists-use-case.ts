@@ -7,6 +7,10 @@ export interface FetchExerciseListsUseCaseRequest {
   userId: string
   page: number
   perPage: number
+  search?: string
+  status?: string
+  startDate?: Date
+  endDate?: Date
 }
 
 type FetchExerciseListsUseCaseResponse = Either<
@@ -22,11 +26,19 @@ export class FetchExerciseListsUseCase {
     userId,
     page,
     perPage,
+    search,
+    status,
+    startDate,
+    endDate,
   }: FetchExerciseListsUseCaseRequest): Promise<FetchExerciseListsUseCaseResponse> {
     const result = await this.exerciseListsRepository.findManyByUserId({
       userId,
       page,
       perPage,
+      search,
+      status,
+      startDate,
+      endDate,
     })
 
     return right(result)
