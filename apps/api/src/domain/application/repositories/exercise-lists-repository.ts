@@ -5,6 +5,10 @@ export interface FindManyExerciseListsParams {
   userId: string
   page: number
   perPage: number
+  search?: string
+  status?: string
+  startDate?: Date
+  endDate?: Date
 }
 
 export abstract class ExerciseListsRepository {
