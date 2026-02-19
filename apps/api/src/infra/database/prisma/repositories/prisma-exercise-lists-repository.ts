@@ -7,6 +7,7 @@ import {
 import { ExerciseList } from '@/domain/entreprise/entities/exercise-list'
 import { ExerciseListPagination } from '@/core/repositories/exercise-list-pagination'
 import { ExerciseListMapper } from '../mappers/prisma-exercise-list-mapper'
+import { Prisma } from '@/infra/generated/prisma'
 
 @Injectable()
 export class PrismaExerciseListsRepository implements ExerciseListsRepository {
@@ -30,16 +31,32 @@ export class PrismaExerciseListsRepository implements ExerciseListsRepository {
   async findManyByUserId(
     params: FindManyExerciseListsParams,
   ): Promise<ExerciseListPagination> {
-    const { userId, page, perPage } = params
+    const { userId, page, perPage, search, status, startDate, endDate } = params
+
+    const where: Prisma.ExerciseListWhereInput = { userId }
+
+    if (search) {
+      where.name = { contains: search, mode: 'insensitive' }
+    }
+
+    if (status) {
+      where.status = status as Prisma.EnumExerciseListStatusFilter['equals']
+    }
+
+    if (startDate || endDate) {
+      where.createdAt = {}
+      if (startDate) where.createdAt.gte = startDate
+      if (endDate) where.createdAt.lte = endDate
+    }
 
     const [exerciseLists, totalItems] = await Promise.all([
       this.prisma.exerciseList.findMany({
-        where: { userId },
+        where,
         orderBy: { createdAt: 'desc' },
         skip: (page - 1) * perPage,
         take: perPage,
       }),
-      this.prisma.exerciseList.count({ where: { userId } }),
+      this.prisma.exerciseList.count({ where }),
     ])
 
     const listIds = exerciseLists.map((l) => l.id)
