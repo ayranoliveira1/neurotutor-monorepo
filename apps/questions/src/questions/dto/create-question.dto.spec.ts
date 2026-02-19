@@ -67,4 +67,50 @@ describe('createQuestionSchema', () => {
     })
     expect(result.success).toBe(false)
   })
+
+  it('deve aceitar year e difficulty opcionais', () => {
+    const result = createQuestionSchema.safeParse({
+      ...validData,
+      year: 2025,
+      difficulty: 'EASY',
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it('deve aceitar sem year e difficulty', () => {
+    const result = createQuestionSchema.safeParse(validData)
+    expect(result.success).toBe(true)
+  })
+
+  it('deve aceitar todos os valores do enum Difficulty', () => {
+    for (const difficulty of ['EASY', 'MEDIUM', 'HARD']) {
+      const result = createQuestionSchema.safeParse({
+        ...validData,
+        difficulty,
+      })
+      expect(result.success).toBe(true)
+    }
+  })
+
+  it('deve rejeitar difficulty inválido', () => {
+    const result = createQuestionSchema.safeParse({
+      ...validData,
+      difficulty: 'INVALID',
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it('deve rejeitar year fora do intervalo', () => {
+    const tooLow = createQuestionSchema.safeParse({
+      ...validData,
+      year: 1899,
+    })
+    expect(tooLow.success).toBe(false)
+
+    const tooHigh = createQuestionSchema.safeParse({
+      ...validData,
+      year: 2101,
+    })
+    expect(tooHigh.success).toBe(false)
+  })
 })
