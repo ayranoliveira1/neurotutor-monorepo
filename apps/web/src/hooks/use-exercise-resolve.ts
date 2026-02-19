@@ -28,7 +28,7 @@ export function useExerciseResolve(exerciseListId: string) {
   const finishAction = useAction(finishExerciseListAction, {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['exercise-lists'] })
-      router.push(`/listas/${exerciseListId}/result`)
+      router.push(`/listas/${exerciseListId}/resultado`)
     },
     onError: ({ error }) => {
       toast.error(error.serverError ?? 'Erro ao finalizar lista')
