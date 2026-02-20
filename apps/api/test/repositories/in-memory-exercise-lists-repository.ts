@@ -70,4 +70,8 @@ export class InMemoryExerciseListsRepository
   async delete(id: string): Promise<void> {
     this.items = this.items.filter((i) => i.id.toString() !== id)
   }
+
+  async existsByQuestionId(questionId: string): Promise<boolean> {
+    return this.items.some((list) => list.questionIds.includes(questionId))
+  }
 }

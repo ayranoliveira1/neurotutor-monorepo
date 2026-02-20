@@ -108,4 +108,13 @@ export class PrismaExerciseListsRepository implements ExerciseListsRepository {
   async delete(id: string): Promise<void> {
     await this.prisma.exerciseList.delete({ where: { id } })
   }
+
+  async existsByQuestionId(questionId: string): Promise<boolean> {
+    const count = await this.prisma.exerciseList.count({
+      where: {
+        questionIds: { array_contains: [questionId] },
+      },
+    })
+    return count > 0
+  }
 }

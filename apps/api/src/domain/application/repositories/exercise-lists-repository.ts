@@ -19,4 +19,5 @@ export abstract class ExerciseListsRepository {
   ): Promise<ExerciseListPagination>
   abstract save(exerciseList: ExerciseList): Promise<void>
   abstract delete(id: string): Promise<void>
+  abstract existsByQuestionId(questionId: string): Promise<boolean>
 }
