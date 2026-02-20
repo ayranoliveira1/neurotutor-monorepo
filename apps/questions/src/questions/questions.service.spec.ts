@@ -1,5 +1,6 @@
 import { QuestionsService } from './questions.service'
-import { NotFoundException } from '@nestjs/common'
+import { ConflictException, NotFoundException } from '@nestjs/common'
+import { Prisma } from '@/generated/prisma'
 
 const mockPrisma = {
   question: {
@@ -10,6 +11,7 @@ const mockPrisma = {
     count: vi.fn(),
     update: vi.fn(),
     delete: vi.fn(),
+    groupBy: vi.fn(),
   },
   $queryRawUnsafe: vi.fn(),
 }
@@ -40,6 +42,28 @@ describe('QuestionsService', () => {
 
       expect(mockPrisma.question.create).toHaveBeenCalledWith({ data })
       expect(result.externalId).toBe('123')
+    })
+
+    it('deve lançar ConflictException quando external_id duplicado', async () => {
+      const data = {
+        externalId: '123',
+        statement: 'Qual a resposta?',
+        alternatives: ['A', 'B', 'C', 'D'],
+        origin: 'ENEM 2025',
+        subject: 'Matemática',
+        categories: ['Álgebra'],
+        correctAnswer: 0,
+      }
+
+      mockPrisma.question.create.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
+          code: 'P2002',
+          clientVersion: '7.0.0',
+          meta: { target: ['external_id'] },
+        }),
+      )
+
+      await expect(service.create(data)).rejects.toThrow(ConflictException)
     })
   })
 
@@ -260,6 +284,21 @@ describe('QuestionsService', () => {
 
       expect(result.statement).toBe('Atualizado')
     })
+
+    it('deve lançar ConflictException quando external_id duplicado no update', async () => {
+      mockPrisma.question.findUnique.mockResolvedValue({ id: 'uuid-1' })
+      mockPrisma.question.update.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError('Unique constraint failed', {
+          code: 'P2002',
+          clientVersion: '7.0.0',
+          meta: { target: ['external_id'] },
+        }),
+      )
+
+      await expect(
+        service.update('uuid-1', { externalId: 'duplicado' }),
+      ).rejects.toThrow(ConflictException)
+    })
   })
 
   describe('delete', () => {
@@ -409,6 +448,39 @@ describe('QuestionsService', () => {
         distinct: ['difficulty'],
         where: { difficulty: { not: null } },
       })
+    })
+  })
+
+  describe('getStats', () => {
+    it('deve retornar total e contagem por disciplina', async () => {
+      mockPrisma.question.count.mockResolvedValue(150)
+      mockPrisma.question.groupBy.mockResolvedValue([
+        { subject: 'Matemática', _count: { id: 80 } },
+        { subject: 'Português', _count: { id: 70 } },
+      ])
+
+      const result = await service.getStats()
+
+      expect(result.total).toBe(150)
+      expect(result.bySubject).toEqual([
+        { subject: 'Matemática', count: 80 },
+        { subject: 'Português', count: 70 },
+      ])
+      expect(mockPrisma.question.groupBy).toHaveBeenCalledWith({
+        by: ['subject'],
+        _count: { id: true },
+        orderBy: { _count: { id: 'desc' } },
+      })
+    })
+
+    it('deve retornar zero quando não há questões', async () => {
+      mockPrisma.question.count.mockResolvedValue(0)
+      mockPrisma.question.groupBy.mockResolvedValue([])
+
+      const result = await service.getStats()
+
+      expect(result.total).toBe(0)
+      expect(result.bySubject).toEqual([])
     })
   })
 

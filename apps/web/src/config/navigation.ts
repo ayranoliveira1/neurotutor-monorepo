@@ -5,6 +5,7 @@ import {
   Star,
   Bell,
   ClipboardList,
+  HelpCircle,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -36,6 +37,7 @@ export const navigationGroups: NavGroup[] = [
       { label: 'Planos', href: '/admin/planos', icon: CreditCard },
       { label: 'Avaliações', href: '/admin/avaliacoes', icon: Star },
       { label: 'Notificações', href: '/admin/notificacoes', icon: Bell },
+      { label: 'Questões', href: '/admin/questoes', icon: HelpCircle },
     ],
   },
 ]

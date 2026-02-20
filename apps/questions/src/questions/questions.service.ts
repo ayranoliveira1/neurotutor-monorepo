@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '@/prisma/prisma.service'
 import { type CreateQuestionDto } from './dto/create-question.dto'
 import { type UpdateQuestionDto } from './dto/update-question.dto'
@@ -11,7 +11,17 @@ export class QuestionsService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: CreateQuestionDto) {
-    return this.prisma.question.create({ data })
+    try {
+      return await this.prisma.question.create({ data })
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Já existe uma questão com este ID externo')
+      }
+      throw error
+    }
   }
 
   async createMany(data: CreateQuestionDto[]) {
@@ -121,10 +131,20 @@ export class QuestionsService {
   async update(id: string, data: UpdateQuestionDto) {
     await this.findById(id)
 
-    return this.prisma.question.update({
-      where: { id },
-      data,
-    })
+    try {
+      return await this.prisma.question.update({
+        where: { id },
+        data,
+      })
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Já existe uma questão com este ID externo')
+      }
+      throw error
+    }
   }
 
   async delete(id: string) {
@@ -211,6 +231,25 @@ export class QuestionsService {
     })
 
     return difficulties.map((d) => d.difficulty!).filter(Boolean)
+  }
+
+  async getStats() {
+    const [total, bySubject] = await Promise.all([
+      this.prisma.question.count(),
+      this.prisma.question.groupBy({
+        by: ['subject'],
+        _count: { id: true },
+        orderBy: { _count: { id: 'desc' } },
+      }),
+    ])
+
+    return {
+      total,
+      bySubject: bySubject.map((item) => ({
+        subject: item.subject,
+        count: item._count.id,
+      })),
+    }
   }
 
   async getCategories(subject?: string) {

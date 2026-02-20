@@ -5,7 +5,12 @@ import {
   QuestionsProvider,
   type QuestionData,
   type QuestionWithAnswer,
+  type QuestionsStats,
+  type CreateQuestionParams,
+  type UpdateQuestionParams,
   type FindRandomQuestionsParams,
+  type ListQuestionsParams,
+  type QuestionsPagination,
 } from '@/domain/application/providers/questions-provider'
 
 @Injectable()
@@ -111,5 +116,63 @@ export class HttpQuestionsProvider implements QuestionsProvider {
       { headers: this.headers },
     )
     return data
+  }
+
+  async listQuestions(
+    params: ListQuestionsParams,
+  ): Promise<QuestionsPagination> {
+    const { data } = await axios.get(`${this.baseUrl}/questions`, {
+      headers: this.headers,
+      params,
+    })
+    return data
+  }
+
+  async getStats(): Promise<QuestionsStats> {
+    const { data } = await axios.get(`${this.baseUrl}/questions/stats`, {
+      headers: this.headers,
+    })
+    return data
+  }
+
+  async createQuestion(
+    params: CreateQuestionParams,
+  ): Promise<QuestionWithAnswer> {
+    const { data } = await axios.post(`${this.baseUrl}/questions`, params, {
+      headers: this.headers,
+    })
+    return data
+  }
+
+  async getQuestionById(id: string): Promise<QuestionWithAnswer | null> {
+    try {
+      const { data } = await axios.get(`${this.baseUrl}/questions/${id}`, {
+        headers: this.headers,
+      })
+      return data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return null
+      }
+      throw error
+    }
+  }
+
+  async updateQuestion(
+    id: string,
+    params: UpdateQuestionParams,
+  ): Promise<QuestionWithAnswer> {
+    const { data } = await axios.put(
+      `${this.baseUrl}/questions/${id}`,
+      params,
+      { headers: this.headers },
+    )
+    return data
+  }
+
+  async deleteQuestion(id: string): Promise<void> {
+    await axios.delete(`${this.baseUrl}/questions/${id}`, {
+      headers: this.headers,
+    })
   }
 }
