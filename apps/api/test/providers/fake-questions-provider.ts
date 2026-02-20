@@ -2,7 +2,12 @@ import {
   QuestionsProvider,
   type QuestionData,
   type QuestionWithAnswer,
+  type QuestionsStats,
+  type CreateQuestionParams,
+  type UpdateQuestionParams,
   type FindRandomQuestionsParams,
+  type ListQuestionsParams,
+  type QuestionsPagination,
 } from '@/domain/application/providers/questions-provider'
 import { faker } from '@faker-js/faker'
 
@@ -121,5 +126,103 @@ export class FakeQuestionsProvider implements QuestionsProvider {
       .map((q) => q.difficulty)
       .filter((d): d is string => d != null)
     return [...new Set(diffs)]
+  }
+
+  async listQuestions(
+    params: ListQuestionsParams,
+  ): Promise<QuestionsPagination> {
+    let filtered = [...this.questions]
+
+    if (params.subject) {
+      filtered = filtered.filter(
+        (q) => q.subject.toLowerCase() === params.subject!.toLowerCase(),
+      )
+    }
+    if (params.year) {
+      filtered = filtered.filter((q) => q.year === params.year)
+    }
+    if (params.difficulty) {
+      filtered = filtered.filter((q) => q.difficulty === params.difficulty)
+    }
+
+    const total = filtered.length
+    const start = (params.page - 1) * params.perPage
+    const questions = filtered.slice(start, start + params.perPage)
+
+    return {
+      questions,
+      meta: {
+        total,
+        page: params.page,
+        perPage: params.perPage,
+        totalPages: Math.ceil(total / params.perPage) || 1,
+      },
+    }
+  }
+
+  async getStats(): Promise<QuestionsStats> {
+    const subjectMap = new Map<string, number>()
+    for (const q of this.questions) {
+      subjectMap.set(q.subject, (subjectMap.get(q.subject) ?? 0) + 1)
+    }
+    const bySubject = [...subjectMap.entries()]
+      .map(([subject, count]) => ({ subject, count }))
+      .sort((a, b) => b.count - a.count)
+
+    return {
+      total: this.questions.length,
+      bySubject,
+    }
+  }
+
+  async createQuestion(
+    params: CreateQuestionParams,
+  ): Promise<QuestionWithAnswer> {
+    const question: QuestionWithAnswer = {
+      id: faker.string.uuid(),
+      externalId: params.externalId,
+      statement: params.statement,
+      imageUrl: params.imageUrl ?? null,
+      alternatives: params.alternatives,
+      origin: params.origin,
+      subject: params.subject,
+      categories: params.categories,
+      correctAnswer: params.correctAnswer,
+      year: params.year ?? null,
+      difficulty: params.difficulty ?? null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+    this.questions.push(question)
+    return question
+  }
+
+  async getQuestionById(id: string): Promise<QuestionWithAnswer | null> {
+    return this.questions.find((q) => q.id === id) ?? null
+  }
+
+  async updateQuestion(
+    id: string,
+    params: UpdateQuestionParams,
+  ): Promise<QuestionWithAnswer> {
+    const index = this.questions.findIndex((q) => q.id === id)
+    if (index === -1) throw new Error('Questão não encontrada')
+
+    this.questions[index] = {
+      ...this.questions[index],
+      ...Object.fromEntries(
+        Object.entries(params).filter(([, v]) => v !== undefined),
+      ),
+      updatedAt: new Date(),
+    }
+
+    return this.questions[index]
+  }
+
+  async deleteQuestion(id: string): Promise<void> {
+    const index = this.questions.findIndex((q) => q.id === id)
+    if (index !== -1) {
+      this.questions.splice(index, 1)
+    }
   }
 }
