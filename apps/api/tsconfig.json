@@ -2,6 +2,7 @@
   "extends": "@apps/typescript-config/nestjs.json",
   "compilerOptions": {
     "baseUrl": "./",
+    "types": ["vitest/globals"],
     "paths": {
       "@/*": ["./src/*"],
       "@test/*": ["./test/*"]
