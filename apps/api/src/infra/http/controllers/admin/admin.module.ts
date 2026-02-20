@@ -17,6 +17,12 @@ import { AdminDeleteRatingUseCase } from '@/domain/application/use-cases/admin/r
 import { CreateNotificationUseCase } from '@/domain/application/use-cases/admin/notification/create-notification-use-case'
 import { AdminListNotificationsUseCase } from '@/domain/application/use-cases/admin/notification/admin-list-notifications-use-case'
 import { AdminDeleteNotificationUseCase } from '@/domain/application/use-cases/admin/notification/admin-delete-notification-use-case'
+import { GetQuestionsStatsUseCase } from '@/domain/application/use-cases/admin/question/get-questions-stats-use-case'
+import { AdminCreateQuestionUseCase } from '@/domain/application/use-cases/admin/question/admin-create-question-use-case'
+import { AdminListQuestionsUseCase } from '@/domain/application/use-cases/admin/question/admin-list-questions-use-case'
+import { AdminGetQuestionByIdUseCase } from '@/domain/application/use-cases/admin/question/admin-get-question-by-id-use-case'
+import { AdminUpdateQuestionUseCase } from '@/domain/application/use-cases/admin/question/admin-update-question-use-case'
+import { AdminDeleteQuestionUseCase } from '@/domain/application/use-cases/admin/question/admin-delete-question-use-case'
 
 import { CreatePlanController } from './plan/create-plan.controller'
 import { UpdatePlanController } from './plan/update-plan.controller'
@@ -33,6 +39,12 @@ import { AdminDeleteRatingController } from './rating/admin-delete-rating.contro
 import { AdminCreateNotificationController } from './notification/admin-create-notification.controller'
 import { AdminListNotificationsController } from './notification/admin-list-notifications.controller'
 import { AdminDeleteNotificationController } from './notification/admin-delete-notification.controller'
+import { AdminQuestionsStatsController } from './question/admin-questions-stats.controller'
+import { AdminCreateQuestionController } from './question/admin-create-question.controller'
+import { AdminListQuestionsController } from './question/admin-list-questions.controller'
+import { AdminGetQuestionByIdController } from './question/admin-get-question-by-id.controller'
+import { AdminUpdateQuestionController } from './question/admin-update-question.controller'
+import { AdminDeleteQuestionController } from './question/admin-delete-question.controller'
 
 @Module({
   controllers: [
@@ -51,6 +63,12 @@ import { AdminDeleteNotificationController } from './notification/admin-delete-n
     AdminCreateNotificationController,
     AdminListNotificationsController,
     AdminDeleteNotificationController,
+    AdminListQuestionsController,
+    AdminQuestionsStatsController,
+    AdminCreateQuestionController,
+    AdminGetQuestionByIdController,
+    AdminUpdateQuestionController,
+    AdminDeleteQuestionController,
   ],
   providers: [
     { provide: AuthProvider, useClass: BetterAuthProvider },
@@ -69,6 +87,12 @@ import { AdminDeleteNotificationController } from './notification/admin-delete-n
     CreateNotificationUseCase,
     AdminListNotificationsUseCase,
     AdminDeleteNotificationUseCase,
+    GetQuestionsStatsUseCase,
+    AdminCreateQuestionUseCase,
+    AdminListQuestionsUseCase,
+    AdminGetQuestionByIdUseCase,
+    AdminUpdateQuestionUseCase,
+    AdminDeleteQuestionUseCase,
   ],
 })
 export class AdminModule {}
