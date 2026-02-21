@@ -12,8 +12,8 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
-import { adminDeleteNotificationAction } from '@/actions/admin/delete-notification'
-import type { AdminNotification } from '@/actions/admin/list-notifications'
+import { adminDeleteNotificationAction } from '@/actions/admin/notificacoes/delete-notification'
+import type { AdminNotification } from '@/actions/admin/notificacoes/list-notifications'
 
 interface DeleteNotificationDialogProps {
   notification: AdminNotification | null

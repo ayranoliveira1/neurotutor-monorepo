@@ -4,11 +4,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createElement } from 'react'
 import { useNotificationsAdminQuery } from '../use-notifications-admin-query'
 
-vi.mock('@/actions/admin/list-notifications', () => ({
+vi.mock('@/actions/admin/notificacoes/list-notifications', () => ({
   listNotificationsAction: vi.fn(),
 }))
 
-import { listNotificationsAction } from '@/actions/admin/list-notifications'
+import { listNotificationsAction } from '@/actions/admin/notificacoes/list-notifications'
 
 const mockListNotifications = vi.mocked(listNotificationsAction)
 

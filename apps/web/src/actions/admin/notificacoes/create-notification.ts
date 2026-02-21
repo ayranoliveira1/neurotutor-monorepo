@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { adminCreateNotificationSchema } from '@/schemas/notification'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 interface CreateNotificationResponse {
   notification: { id: string; title: string; content: string }
@@ -24,11 +24,7 @@ export const createNotificationAction = actionClient
       },
     )
 
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.message || data.error || 'Erro ao criar notificação',
-      )
-    }
+    handleApiError(response, data, 'Erro ao criar notificação')
 
     return data.data
   })

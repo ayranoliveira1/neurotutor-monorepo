@@ -11,7 +11,7 @@ import {
   TableHead,
   TableCell,
 } from '@/components/ui/table'
-import type { AdminNotification } from '@/actions/admin/list-notifications'
+import type { AdminNotification } from '@/actions/admin/notificacoes/list-notifications'
 
 interface NotificationsTableProps {
   notifications: AdminNotification[]
