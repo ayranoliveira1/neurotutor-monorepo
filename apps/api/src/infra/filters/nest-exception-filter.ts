@@ -5,7 +5,7 @@ import {
   Logger,
   HttpException,
 } from '@nestjs/common'
-import { Response } from 'express'
+import { Request, Response } from 'express'
 import { isAxiosError } from 'axios'
 import { UseCaseError } from '@/core/errors/use-case-error'
 import { HttpResponse } from '../http/response-type'
@@ -73,15 +73,23 @@ export class AllExceptionsFilter implements NestExceptionFilter {
       errorMessages = [exception.message]
     }
 
-    if (status === 500) {
+    const context = host.switchToHttp()
+    const request = context.getRequest<Request>()
+    const response = context.getResponse<Response>()
+    const { method, url } = request
+
+    const messages = errorMessages
+      .map((e) => (typeof e === 'string' ? e : e?.message || JSON.stringify(e)))
+      .join(', ')
+
+    if (status >= 500) {
       this.logger.error(
-        `Erro Interno do Servidor: ${exception.message}`,
+        `${method} ${url} ${status} - ${messages}`,
         exception.stack
       )
+    } else {
+      this.logger.error(`${method} ${url} ${status} - ${messages}`)
     }
-
-    const context = host.switchToHttp()
-    const response = context.getResponse<Response>()
 
     const errorResponse: HttpResponse<[], any[]> = {
       success: false,
