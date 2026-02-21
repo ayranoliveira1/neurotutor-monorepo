@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { adminCreateUserSchema } from '@/schemas/admin'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 interface CreateUserResponse {
   user: { id: string; name: string; email: string }
@@ -16,9 +16,7 @@ export const createUserAction = actionClient
       body: JSON.stringify(parsedInput),
     })
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || data.error || 'Erro ao criar usuário')
-    }
+    handleApiError(response, data, 'Erro ao criar usuário')
 
     return data.data
   })

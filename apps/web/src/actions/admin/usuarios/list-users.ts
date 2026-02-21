@@ -1,6 +1,6 @@
 'use server'
 
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 export interface AdminUserSubscription {
   id: string
@@ -61,9 +61,7 @@ export async function listUsersAction(
 
   const { response, data } = await api<ListUsersResponse>(endpoint)
 
-  if (!response.ok || !data.success) {
-    throw new Error(data.message || data.error || 'Erro ao listar usuários')
-  }
+  handleApiError(response, data, 'Erro ao listar usuários')
 
   return data.data!
 }

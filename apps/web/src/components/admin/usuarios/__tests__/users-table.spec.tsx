@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { UsersTable } from '../users-table'
-import type { AdminUser } from '@/actions/admin/list-users'
+import type { AdminUser } from '@/actions/admin/usuarios/list-users'
 
 const mockUsers: AdminUser[] = [
   {

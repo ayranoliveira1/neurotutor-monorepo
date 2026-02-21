@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
-import type { AdminUser } from '@/actions/admin/list-users'
+import type { AdminUser } from '@/actions/admin/usuarios/list-users'
 
 interface UserActionsDropdownProps {
   user: AdminUser
