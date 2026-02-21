@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
-import { PlansPageContent } from '@/components/admin/plans-page-content'
-import { PlansPageSkeleton } from '@/components/admin/plans-page-skeleton'
+import { PlansPageContent } from '@/components/admin/planos/plans-page-content'
+import { PlansPageSkeleton } from '@/components/admin/planos/plans-page-skeleton'
 
 export const metadata: Metadata = {
   title: 'Planos | Admin | NeuroTutor',

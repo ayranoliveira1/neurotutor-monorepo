@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 import { adminCreateNotificationSchema } from '@/schemas/notification'
 import { createNotificationAction } from '@/actions/admin/create-notification'
-import { UserMultiSelect } from './user-multi-select'
+import { UserMultiSelect } from '../user-multi-select'
 
 interface CreateNotificationDialogProps {
   open: boolean
