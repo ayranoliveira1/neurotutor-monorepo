@@ -1,6 +1,6 @@
 'use server'
 
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 export interface AdminQuestion {
   id: string
@@ -48,9 +48,7 @@ export async function listQuestionsAction(
 
   const { response, data } = await api<ListQuestionsResponse>(endpoint)
 
-  if (!response.ok || !data.success) {
-    throw new Error(data.message || data.error || 'Erro ao listar questões')
-  }
+  handleApiError(response, data, 'Erro ao listar questões')
 
   return data.data!
 }

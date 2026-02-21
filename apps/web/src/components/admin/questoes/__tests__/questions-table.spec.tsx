@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { QuestionsTable } from '../questions-table'
-import type { AdminQuestion } from '@/actions/admin/list-questions'
+import type { AdminQuestion } from '@/actions/admin/questoes/list-questions'
 
 vi.mock('next/link', () => ({
   default: ({

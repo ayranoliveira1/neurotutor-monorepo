@@ -4,11 +4,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createElement } from 'react'
 import { useQuestionDetailQuery } from '../use-question-detail-query'
 
-vi.mock('@/actions/admin/get-question', () => ({
+vi.mock('@/actions/admin/questoes/get-question', () => ({
   getQuestionAction: vi.fn(),
 }))
 
-import { getQuestionAction } from '@/actions/admin/get-question'
+import { getQuestionAction } from '@/actions/admin/questoes/get-question'
 
 const mockGetQuestion = vi.mocked(getQuestionAction)
 

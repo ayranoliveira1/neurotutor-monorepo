@@ -11,7 +11,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { deleteQuestionAction } from '@/actions/admin/delete-question'
+import { deleteQuestionAction } from '@/actions/admin/questoes/delete-question'
 
 interface DeleteQuestionDialogProps {
   questionId: string

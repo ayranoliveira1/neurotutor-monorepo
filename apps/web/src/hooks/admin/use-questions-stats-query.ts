@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { getQuestionsStatsAction } from '@/actions/admin/get-questions-stats'
+import { getQuestionsStatsAction } from '@/actions/admin/questoes/get-questions-stats'
 
 export function useQuestionsStatsQuery() {
   return useQuery({

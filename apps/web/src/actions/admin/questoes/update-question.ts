@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { adminUpdateQuestionSchema } from '@/schemas/question'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 interface UpdateQuestionResponse {
   question: { id: string }
@@ -21,18 +21,7 @@ export const updateQuestionAction = actionClient
       },
     )
 
-    if (!response.ok || !data.success) {
-      const errorMsg = Array.isArray(data.error)
-        ? data.error
-            .map((e: unknown) =>
-              typeof e === 'string' ? e : (e as { message?: string }).message,
-            )
-            .filter(Boolean)
-            .join(', ')
-        : data.error
-
-      throw new Error(data.message || errorMsg || 'Erro ao atualizar questão')
-    }
+    handleApiError(response, data, 'Erro ao atualizar questão')
 
     return data.data
   })
