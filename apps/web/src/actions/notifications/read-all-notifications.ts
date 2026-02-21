@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { z } from 'zod'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 const readAllNotificationsSchema = z.object({})
 
@@ -14,13 +14,7 @@ export const readAllNotificationsAction = actionClient
       { method: 'PATCH' },
     )
 
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.message ||
-          data.error ||
-          'Erro ao marcar todas notificações como lidas',
-      )
-    }
+    handleApiError(response, data, 'Erro ao marcar todas notificações como lidas')
 
     return data.data
   })
