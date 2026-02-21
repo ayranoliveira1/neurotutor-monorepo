@@ -61,6 +61,18 @@ export class PrismaExerciseAnswersRepository
     })
   }
 
+  async findAnsweredQuestionIdsByUserId(userId: string): Promise<string[]> {
+    const answers = await this.prisma.exerciseAnswer.findMany({
+      where: {
+        exerciseList: { userId },
+      },
+      select: { questionId: true },
+      distinct: ['questionId'],
+    })
+
+    return answers.map((a) => a.questionId)
+  }
+
   async saveManyIsCorrect(answers: ExerciseAnswer[]): Promise<void> {
     await this.prisma.$transaction(
       answers.map((answer) => {
