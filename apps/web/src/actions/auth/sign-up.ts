@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation'
 import { actionClient } from '@/lib/safe-action'
 import { signUpSchema } from '@/schemas/auth'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 interface SignUpResponse {
   success: boolean
@@ -20,13 +20,7 @@ export const signUpAction = actionClient
       skipAuth: true,
     })
 
-    const apiData = data as unknown as SignUpResponse
-
-    if (!response.ok || !apiData.success) {
-      const errorMessage =
-        apiData.error?.[0]?.message || data.message || 'Erro ao criar conta'
-      throw new Error(errorMessage)
-    }
+    handleApiError(response, data, 'Erro ao criar conta')
 
     redirect('/login')
   })
