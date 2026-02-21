@@ -88,7 +88,7 @@ export class AllExceptionsFilter implements NestExceptionFilter {
         exception.stack
       )
     } else {
-      this.logger.error(`${method} ${url} ${status} - ${messages}`)
+      this.logger.warn(`${method} ${url} ${status} - ${messages}`)
     }
 
     const errorResponse: HttpResponse<[], any[]> = {
