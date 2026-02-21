@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { CreateQuestionPageContent } from '@/components/admin/create-question-page-content'
+import { CreateQuestionPageContent } from '@/components/admin/questoes/create-question-page-content'
 
 export const metadata: Metadata = {
   title: 'Criar Questão | Admin | NeuroTutor',

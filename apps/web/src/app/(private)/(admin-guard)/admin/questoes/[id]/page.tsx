@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
-import { QuestionDetailPageContent } from '@/components/admin/question-detail-page-content'
+import { QuestionDetailPageContent } from '@/components/admin/questoes/question-detail-page-content'
 
 export const metadata: Metadata = {
   title: 'Detalhes da Questão | Admin | NeuroTutor',
