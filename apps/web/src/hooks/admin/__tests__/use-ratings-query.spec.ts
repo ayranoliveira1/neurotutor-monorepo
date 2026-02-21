@@ -4,11 +4,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createElement } from 'react'
 import { useRatingsQuery } from '../use-ratings-query'
 
-vi.mock('@/actions/admin/list-ratings', () => ({
+vi.mock('@/actions/admin/avaliacoes/list-ratings', () => ({
   listRatingsAction: vi.fn(),
 }))
 
-import { listRatingsAction } from '@/actions/admin/list-ratings'
+import { listRatingsAction } from '@/actions/admin/avaliacoes/list-ratings'
 
 const mockListRatings = vi.mocked(listRatingsAction)
 

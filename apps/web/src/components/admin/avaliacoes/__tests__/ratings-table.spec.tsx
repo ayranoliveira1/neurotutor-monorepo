@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { RatingsTable } from '../ratings-table'
-import type { AdminRating } from '@/actions/admin/list-ratings'
+import type { AdminRating } from '@/actions/admin/avaliacoes/list-ratings'
 
 vi.mock('@/components/ui/table', () => ({
   Table: ({ children }: { children: React.ReactNode }) => (

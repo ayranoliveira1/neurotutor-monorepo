@@ -4,7 +4,7 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import {
   listRatingsAction,
   type ListRatingsParams,
-} from '@/actions/admin/list-ratings'
+} from '@/actions/admin/avaliacoes/list-ratings'
 
 export function useRatingsQuery(params: ListRatingsParams) {
   return useQuery({
