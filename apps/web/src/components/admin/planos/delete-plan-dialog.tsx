@@ -2,6 +2,7 @@
 
 import { useAction } from 'next-safe-action/hooks'
 import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -58,7 +59,14 @@ export function DeletePlanDialog({
             disabled={isPending}
             onClick={() => plan && execute({ id: plan.id })}
           >
-            {isPending ? 'Excluindo...' : 'Excluir'}
+            {isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Excluindo...
+              </>
+            ) : (
+              'Excluir'
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

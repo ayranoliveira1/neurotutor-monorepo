@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -211,7 +212,14 @@ export function EditPlanDialog({
               Cancelar
             </Button>
             <Button type="submit" disabled={action.isPending}>
-              {action.isPending ? 'Salvando...' : 'Salvar alterações'}
+              {action.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                'Salvar alterações'
+              )}
             </Button>
           </DialogFooter>
         </form>
