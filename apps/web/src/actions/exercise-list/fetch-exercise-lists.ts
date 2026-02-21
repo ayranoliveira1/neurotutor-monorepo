@@ -1,6 +1,6 @@
 'use server'
 
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 import type { ExerciseListItem } from './types'
 
 export interface FetchExerciseListsParams {
@@ -36,9 +36,7 @@ export async function fetchExerciseListsAction(
 
   const { response, data } = await api<FetchExerciseListsResponse>(endpoint)
 
-  if (!response.ok || !data.success) {
-    throw new Error('Erro ao buscar listas de exercícios')
-  }
+  handleApiError(response, data, 'Erro ao buscar listas de exercícios')
 
   return data.data!
 }
