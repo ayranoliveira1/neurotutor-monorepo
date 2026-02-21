@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { adminUpdateUserSchema } from '@/schemas/admin'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 interface UpdateUserResponse {
   user: { id: string; name: string; email: string }
@@ -26,9 +26,7 @@ export const updateUserAction = actionClient
       }
     )
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || data.error || 'Erro ao atualizar usuário')
-    }
+    handleApiError(response, data, 'Erro ao atualizar usuário')
 
     return data.data
   })

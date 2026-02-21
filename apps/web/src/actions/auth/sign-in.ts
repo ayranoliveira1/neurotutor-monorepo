@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation'
 import { actionClient } from '@/lib/safe-action'
 import { signInSchema } from '@/schemas/auth'
-import { api, setCookiesFromResponse } from '@/lib/api'
+import { api, handleApiError, setCookiesFromResponse } from '@/lib/api'
 
 interface SignInResponse {
   success: boolean
@@ -20,13 +20,7 @@ export const signInAction = actionClient
       skipAuth: true,
     })
 
-    const apiData = data as unknown as SignInResponse
-
-    if (!response.ok || !apiData.success) {
-      const errorMessage =
-        apiData.error?.[0]?.message || data.message || 'Credenciais inválidas'
-      throw new Error(errorMessage)
-    }
+    handleApiError(response, data, 'Credenciais inválidas')
 
     await setCookiesFromResponse(response)
 

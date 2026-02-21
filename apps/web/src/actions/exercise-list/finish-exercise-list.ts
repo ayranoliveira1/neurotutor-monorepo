@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { z } from 'zod'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 import type { ExerciseListItem } from './types'
 
 const finishExerciseListSchema = z.object({
@@ -23,13 +23,7 @@ export const finishExerciseListAction = actionClient
       { method: 'POST' },
     )
 
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.message ||
-          data.error ||
-          'Erro ao finalizar lista de exercícios',
-      )
-    }
+    handleApiError(response, data, 'Erro ao finalizar lista de exercícios')
 
     return data.data
   })

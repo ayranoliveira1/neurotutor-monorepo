@@ -4,11 +4,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createElement } from 'react'
 import { useQuestionsStatsQuery } from '../use-questions-stats-query'
 
-vi.mock('@/actions/admin/get-questions-stats', () => ({
+vi.mock('@/actions/admin/questoes/get-questions-stats', () => ({
   getQuestionsStatsAction: vi.fn(),
 }))
 
-import { getQuestionsStatsAction } from '@/actions/admin/get-questions-stats'
+import { getQuestionsStatsAction } from '@/actions/admin/questoes/get-questions-stats'
 
 const mockGetStats = vi.mocked(getQuestionsStatsAction)
 

@@ -72,7 +72,7 @@ vi.mock('@/hooks/admin/use-question-detail-query', () => ({
   useQuestionDetailQuery: (...args: unknown[]) => mockQuery(...args),
 }))
 
-vi.mock('@/actions/admin/update-question', () => ({
+vi.mock('@/actions/admin/questoes/update-question', () => ({
   updateQuestionAction: vi.fn(),
 }))
 

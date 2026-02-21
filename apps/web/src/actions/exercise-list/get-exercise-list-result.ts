@@ -1,6 +1,6 @@
 'use server'
 
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 import type {
   ExerciseListItem,
   QuestionWithAnswer,
@@ -20,9 +20,7 @@ export async function getExerciseListResultAction(
     `/exercise-lists/${id}/result`,
   )
 
-  if (!response.ok || !data.success) {
-    throw new Error('Erro ao buscar resultado da lista')
-  }
+  handleApiError(response, data, 'Erro ao buscar resultado da lista')
 
   return data.data!
 }

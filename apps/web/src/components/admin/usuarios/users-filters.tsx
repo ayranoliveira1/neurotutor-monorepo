@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
 import { DateRangePicker } from '@/components/ui/date-range-picker'
-import type { Plan } from '@/actions/admin/list-plans'
+import type { Plan } from '@/actions/admin/planos/list-plans'
 
 interface UsersFiltersProps {
   plans: Plan[]

@@ -14,7 +14,7 @@ import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { adminCreateQuestionFormSchema } from '@/schemas/question'
-import { createQuestionAction } from '@/actions/admin/create-question'
+import { createQuestionAction } from '@/actions/admin/questoes/create-question'
 import { ImageUrlPreview } from './image-url-preview'
 
 const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']

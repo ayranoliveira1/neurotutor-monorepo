@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { z } from 'zod'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 import type { ExerciseAnswerData } from './types'
 
 const answerQuestionActionSchema = z.object({
@@ -30,11 +30,7 @@ export const answerQuestionAction = actionClient
       },
     )
 
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.message || data.error || 'Erro ao registrar resposta',
-      )
-    }
+    handleApiError(response, data, 'Erro ao registrar resposta')
 
     return data.data
   })

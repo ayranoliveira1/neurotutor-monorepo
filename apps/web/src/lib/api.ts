@@ -4,9 +4,28 @@ const API_URL = process.env.API_URL
 
 interface ApiResponse<T = unknown> {
   data?: T
-  error?: string
+  error?:
+    | string
+    | { message?: string; path?: string[]; code?: string }[]
   message?: string
   success?: boolean
+}
+
+export function handleApiError(
+  response: Response,
+  data: ApiResponse,
+  fallbackMessage: string,
+): void {
+  if (response.ok && data.success) return
+
+  const errorMsg = Array.isArray(data.error)
+    ? data.error
+        .map((e) => (typeof e === 'string' ? e : e?.message))
+        .filter(Boolean)
+        .join(', ')
+    : data.error
+
+  throw new Error(data.message || errorMsg || fallbackMessage)
 }
 
 interface FetchOptions extends RequestInit {

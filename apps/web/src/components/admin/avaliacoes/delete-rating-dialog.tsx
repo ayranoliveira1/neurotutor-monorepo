@@ -12,8 +12,8 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
-import { deleteRatingAction } from '@/actions/admin/delete-rating'
-import type { AdminRating } from '@/actions/admin/list-ratings'
+import { deleteRatingAction } from '@/actions/admin/avaliacoes/delete-rating'
+import type { AdminRating } from '@/actions/admin/avaliacoes/list-ratings'
 
 interface DeleteRatingDialogProps {
   rating: AdminRating | null

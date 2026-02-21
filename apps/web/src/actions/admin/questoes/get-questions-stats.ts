@@ -1,6 +1,6 @@
 'use server'
 
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 export interface SubjectStats {
   subject: string
@@ -17,9 +17,7 @@ export async function getQuestionsStatsAction(): Promise<QuestionsStats> {
     '/admin/questions/stats',
   )
 
-  if (!response.ok || !data.success) {
-    throw new Error('Erro ao buscar estatísticas de questões')
-  }
+  handleApiError(response, data, 'Erro ao buscar estatísticas de questões')
 
   return data.data!.stats
 }

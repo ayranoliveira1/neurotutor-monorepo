@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import { Calendar, Mail } from 'lucide-react'
-import type { AdminUser } from '@/actions/admin/list-users'
+import type { AdminUser } from '@/actions/admin/usuarios/list-users'
 import { UserRoleBadge } from './user-role-badge'
 import { UserActionsDropdown } from './user-actions-dropdown'
 

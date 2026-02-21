@@ -1,6 +1,6 @@
 'use server'
 
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 export interface NotificationSendId {
   userId: string
@@ -26,11 +26,7 @@ export async function fetchNotificationsAction(): Promise<FetchNotificationsResp
   const { response, data } =
     await api<FetchNotificationsResponse>('/notifications')
 
-  if (!response.ok || !data.success) {
-    throw new Error(
-      data.message || data.error || 'Erro ao buscar notificações',
-    )
-  }
+  handleApiError(response, data, 'Erro ao buscar notificações')
 
   return data.data!
 }

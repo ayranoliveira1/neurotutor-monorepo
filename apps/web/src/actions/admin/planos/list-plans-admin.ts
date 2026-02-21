@@ -1,6 +1,6 @@
 'use server'
 
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 export interface AdminPlan {
   id: string
@@ -23,9 +23,7 @@ export async function listPlansAdminAction(): Promise<AdminPlan[]> {
   const { response, data } =
     await api<ListPlansAdminResponse>('/admin/plans/manage')
 
-  if (!response.ok || !data.success) {
-    throw new Error(data.message || data.error || 'Erro ao listar planos')
-  }
+  handleApiError(response, data, 'Erro ao listar planos')
 
   return data.data!.plans
 }

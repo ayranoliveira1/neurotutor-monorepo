@@ -1,6 +1,6 @@
 'use server'
 
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 export async function fetchCategoriesAction(
   subject?: string,
@@ -11,9 +11,7 @@ export async function fetchCategoriesAction(
 
   const { response, data } = await api<string[]>(endpoint)
 
-  if (!response.ok) {
-    throw new Error('Erro ao buscar categorias')
-  }
+  handleApiError(response, data, 'Erro ao buscar categorias')
 
   return data.data ?? []
 }

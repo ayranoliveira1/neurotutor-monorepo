@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label'
 import { Select } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { adminCreatePlanSchema } from '@/schemas/admin'
-import { createPlanAction } from '@/actions/admin/create-plan'
+import { createPlanAction } from '@/actions/admin/planos/create-plan'
 
 interface CreatePlanDialogProps {
   open: boolean

@@ -4,11 +4,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createElement } from 'react'
 import { useUsersQuery } from '../use-users-query'
 
-vi.mock('@/actions/admin/list-users', () => ({
+vi.mock('@/actions/admin/usuarios/list-users', () => ({
   listUsersAction: vi.fn(),
 }))
 
-import { listUsersAction } from '@/actions/admin/list-users'
+import { listUsersAction } from '@/actions/admin/usuarios/list-users'
 
 const mockListUsers = vi.mocked(listUsersAction)
 

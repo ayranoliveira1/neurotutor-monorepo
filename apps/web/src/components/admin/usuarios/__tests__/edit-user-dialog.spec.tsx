@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { EditUserDialog } from '../edit-user-dialog'
-import type { AdminUser } from '@/actions/admin/list-users'
-import type { Plan } from '@/actions/admin/list-plans'
+import type { AdminUser } from '@/actions/admin/usuarios/list-users'
+import type { Plan } from '@/actions/admin/planos/list-plans'
 
 vi.mock('@next-safe-action/adapter-react-hook-form/hooks', async () => {
   const { useForm: useFormActual } = await vi.importActual<

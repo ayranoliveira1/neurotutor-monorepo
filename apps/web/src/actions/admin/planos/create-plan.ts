@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { adminCreatePlanSchema } from '@/schemas/admin'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 interface CreatePlanResponse {
   plan: { id: string; name: string; slug: string }
@@ -16,9 +16,7 @@ export const createPlanAction = actionClient
       body: JSON.stringify(parsedInput),
     })
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || data.error || 'Erro ao criar plano')
-    }
+    handleApiError(response, data, 'Erro ao criar plano')
 
     return data.data
   })

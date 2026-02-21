@@ -1,6 +1,6 @@
 'use server'
 
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 export interface AdminNotificationSendId {
   userId: string
@@ -42,11 +42,7 @@ export async function listNotificationsAction(
 
   const { response, data } = await api<ListNotificationsResponse>(endpoint)
 
-  if (!response.ok || !data.success) {
-    throw new Error(
-      data.message || data.error || 'Erro ao listar notificações',
-    )
-  }
+  handleApiError(response, data, 'Erro ao listar notificações')
 
   return data.data!
 }

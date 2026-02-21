@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { CreateUserDialog } from '../create-user-dialog'
-import type { Plan } from '@/actions/admin/list-plans'
+import type { Plan } from '@/actions/admin/planos/list-plans'
 
 vi.mock('@next-safe-action/adapter-react-hook-form/hooks', async () => {
   const { useForm: useFormActual } = await vi.importActual<
@@ -25,7 +25,7 @@ vi.mock('@hookform/resolvers/zod', () => ({
   zodResolver: (schema: unknown) => schema,
 }))
 
-vi.mock('@/actions/admin/create-user', () => ({
+vi.mock('@/actions/admin/usuarios/create-user', () => ({
   createUserAction: vi.fn(),
 }))
 

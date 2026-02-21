@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { adminUpdatePlanSchema } from '@/schemas/admin'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 interface UpdatePlanResponse {
   plan: { id: string; name: string; slug: string }
@@ -26,11 +26,7 @@ export const updatePlanAction = actionClient
       },
     )
 
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.message || data.error || 'Erro ao atualizar plano',
-      )
-    }
+    handleApiError(response, data, 'Erro ao atualizar plano')
 
     return data.data
   })

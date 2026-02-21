@@ -1,6 +1,6 @@
 'use server'
 
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 export interface AdminRating {
   id: string
@@ -36,11 +36,7 @@ export async function listRatingsAction(
 
   const { response, data } = await api<ListRatingsResponse>(endpoint)
 
-  if (!response.ok || !data.success) {
-    throw new Error(
-      data.message || data.error || 'Erro ao listar avaliações',
-    )
-  }
+  handleApiError(response, data, 'Erro ao listar avaliações')
 
   return data.data!
 }

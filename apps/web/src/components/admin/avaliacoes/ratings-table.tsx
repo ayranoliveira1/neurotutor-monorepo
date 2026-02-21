@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Star, Trash2, Mail, Calendar } from 'lucide-react'
-import type { AdminRating } from '@/actions/admin/list-ratings'
+import type { AdminRating } from '@/actions/admin/avaliacoes/list-ratings'
 
 interface RatingsTableProps {
   ratings: AdminRating[]

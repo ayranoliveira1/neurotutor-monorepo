@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { createRatingSchema } from '@/schemas/rating'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 interface CreateRatingResponse {
   rating: {
@@ -22,11 +22,7 @@ export const createRatingAction = actionClient
       body: JSON.stringify(parsedInput),
     })
 
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.message || data.error || 'Erro ao enviar avaliação',
-      )
-    }
+    handleApiError(response, data, 'Erro ao enviar avaliação')
 
     return data.data
   })

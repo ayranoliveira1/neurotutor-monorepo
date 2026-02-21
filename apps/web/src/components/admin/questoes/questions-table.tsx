@@ -11,7 +11,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Calendar, Eye } from 'lucide-react'
 import Link from 'next/link'
-import type { AdminQuestion } from '@/actions/admin/list-questions'
+import type { AdminQuestion } from '@/actions/admin/questoes/list-questions'
 
 interface QuestionsTableProps {
   questions: AdminQuestion[]

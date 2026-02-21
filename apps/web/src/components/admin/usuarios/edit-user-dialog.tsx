@@ -18,9 +18,9 @@ import { Select } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { Button } from '@/components/ui/button'
 import { adminUpdateUserSchema } from '@/schemas/admin'
-import { updateUserAction } from '@/actions/admin/update-user'
-import type { AdminUser } from '@/actions/admin/list-users'
-import type { Plan } from '@/actions/admin/list-plans'
+import { updateUserAction } from '@/actions/admin/usuarios/update-user'
+import type { AdminUser } from '@/actions/admin/usuarios/list-users'
+import type { Plan } from '@/actions/admin/planos/list-plans'
 
 interface EditUserDialogProps {
   user: AdminUser | null

@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { createExerciseListSchema } from '@/schemas/exercise-list'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 import type { ExerciseListItem } from './types'
 
 interface CreateExerciseListResponse {
@@ -20,11 +20,7 @@ export const createExerciseListAction = actionClient
       },
     )
 
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.message || data.error || 'Erro ao criar lista de exercícios',
-      )
-    }
+    handleApiError(response, data, 'Erro ao criar lista de exercícios')
 
     return data.data
   })

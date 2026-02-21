@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { UsersFilters } from '../users-filters'
-import type { Plan } from '@/actions/admin/list-plans'
+import type { Plan } from '@/actions/admin/planos/list-plans'
 
 const mockPush = vi.fn()
 let mockSearchParams = new URLSearchParams()

@@ -11,8 +11,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { deleteUserAction } from '@/actions/admin/delete-user'
-import type { AdminUser } from '@/actions/admin/list-users'
+import { deleteUserAction } from '@/actions/admin/usuarios/delete-user'
+import type { AdminUser } from '@/actions/admin/usuarios/list-users'
 
 interface DeleteUserDialogProps {
   user: AdminUser | null
