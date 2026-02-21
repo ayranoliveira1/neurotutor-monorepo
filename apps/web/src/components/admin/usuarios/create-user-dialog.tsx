@@ -3,6 +3,7 @@
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -188,7 +189,14 @@ export function CreateUserDialog({
               Cancelar
             </Button>
             <Button type="submit" disabled={action.isPending}>
-              {action.isPending ? 'Criando...' : 'Criar usuário'}
+              {action.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Criando...
+                </>
+              ) : (
+                'Criar usuário'
+              )}
             </Button>
           </DialogFooter>
         </form>

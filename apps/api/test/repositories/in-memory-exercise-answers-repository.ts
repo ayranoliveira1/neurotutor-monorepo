@@ -1,10 +1,15 @@
 import { ExerciseAnswersRepository } from '@/domain/application/repositories/exercise-answers-repository'
 import { ExerciseAnswer } from '@/domain/entreprise/entities/exercise-answer'
+import { InMemoryExerciseListsRepository } from './in-memory-exercise-lists-repository'
 
 export class InMemoryExerciseAnswersRepository
   implements ExerciseAnswersRepository
 {
   public items: ExerciseAnswer[] = []
+
+  constructor(
+    private exerciseListsRepository?: InMemoryExerciseListsRepository,
+  ) {}
 
   async createOrUpdate(answer: ExerciseAnswer): Promise<void> {
     const index = this.items.findIndex(
@@ -42,6 +47,20 @@ export class InMemoryExerciseAnswersRepository
     return this.items.filter(
       (i) => i.exerciseListId.toString() === exerciseListId,
     ).length
+  }
+
+  async findAnsweredQuestionIdsByUserId(userId: string): Promise<string[]> {
+    const userListIds = (this.exerciseListsRepository?.items ?? [])
+      .filter((list) => list.userId.toString() === userId)
+      .map((list) => list.id.toString())
+
+    const questionIds = this.items
+      .filter((answer) =>
+        userListIds.includes(answer.exerciseListId.toString()),
+      )
+      .map((answer) => answer.questionId)
+
+    return [...new Set(questionIds)]
   }
 
   async saveManyIsCorrect(answers: ExerciseAnswer[]): Promise<void> {

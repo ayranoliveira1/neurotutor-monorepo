@@ -2,6 +2,7 @@ import { Either, left, right } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { UnexpectedError } from '@/core/errors/errors/unexpected-error'
 import { ExerciseListsRepository } from '@/domain/application/repositories/exercise-lists-repository'
+import { ExerciseAnswersRepository } from '@/domain/application/repositories/exercise-answers-repository'
 import { QuestionsProvider } from '@/domain/application/providers/questions-provider'
 import {
   ExerciseList,
@@ -29,6 +30,7 @@ export class CreateExerciseListUseCase {
   constructor(
     private exerciseListsRepository: ExerciseListsRepository,
     private questionsProvider: QuestionsProvider,
+    private exerciseAnswersRepository: ExerciseAnswersRepository,
   ) {}
 
   async execute({
@@ -38,7 +40,17 @@ export class CreateExerciseListUseCase {
     ignoreAnswered,
     sections,
   }: CreateExerciseListUseCaseRequest): Promise<CreateExerciseListUseCaseResponse> {
-    const allQuestionIds: string[] = []
+    const excludeIds: string[] = []
+
+    if (ignoreAnswered) {
+      const answeredIds =
+        await this.exerciseAnswersRepository.findAnsweredQuestionIdsByUserId(
+          userId,
+        )
+      excludeIds.push(...answeredIds)
+    }
+
+    const selectedQuestionIds: string[] = []
 
     for (const section of sections) {
       const questions = await this.questionsProvider.findRandomQuestions({
@@ -48,30 +60,30 @@ export class CreateExerciseListUseCase {
         year: section.year,
         difficulty: section.difficulty,
         quantity: section.quantity,
-        exclude: allQuestionIds,
+        exclude: [...excludeIds, ...selectedQuestionIds],
       })
 
       if (questions.length === 0) {
+        const message = ignoreAnswered
+          ? `Não há questões novas (não respondidas) para a disciplina "${section.subject}".`
+          : `Nenhuma questão encontrada para a disciplina "${section.subject}".`
+
         return left(
           new ResourceNotFoundError({
-            errors: [
-              {
-                message: `Nenhuma questão encontrada para a disciplina "${section.subject}".`,
-              },
-            ],
+            errors: [{ message }],
           }),
         )
       }
 
-      allQuestionIds.push(...questions.map((q) => q.id))
+      selectedQuestionIds.push(...questions.map((q) => q.id))
     }
 
     if (shuffleQuestions) {
-      for (let i = allQuestionIds.length - 1; i > 0; i--) {
+      for (let i = selectedQuestionIds.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
-        ;[allQuestionIds[i], allQuestionIds[j]] = [
-          allQuestionIds[j],
-          allQuestionIds[i],
+        ;[selectedQuestionIds[i], selectedQuestionIds[j]] = [
+          selectedQuestionIds[j],
+          selectedQuestionIds[i],
         ]
       }
     }
@@ -82,8 +94,8 @@ export class CreateExerciseListUseCase {
       shuffleQuestions,
       ignoreAnswered,
       sections,
-      questionIds: allQuestionIds,
-      totalQuestions: allQuestionIds.length,
+      questionIds: selectedQuestionIds,
+      totalQuestions: selectedQuestionIds.length,
     })
 
     await this.exerciseListsRepository.create(exerciseList)

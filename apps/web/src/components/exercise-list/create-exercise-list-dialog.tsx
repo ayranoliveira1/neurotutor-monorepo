@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useFieldArray } from 'react-hook-form'
 import { useHookFormAction } from '@next-safe-action/adapter-react-hook-form/hooks'
@@ -15,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Plus, Trash2 } from 'lucide-react'
+import { Loader2, Plus, Trash2 } from 'lucide-react'
 import { createExerciseListSchema } from '@/schemas/exercise-list'
 import { createExerciseListAction } from '@/actions/exercise-list/create-exercise-list'
 import {
@@ -42,6 +43,7 @@ export function CreateExerciseListDialog({
   onSuccess,
 }: CreateExerciseListDialogProps) {
   const router = useRouter()
+  const [isRedirecting, setIsRedirecting] = useState(false)
   const { data: subjects } = useSubjectsQuery()
   const { data: years } = useYearsQuery()
   const { data: difficulties } = useDifficultiesQuery()
@@ -60,10 +62,9 @@ export function CreateExerciseListDialog({
       },
       actionProps: {
         onSuccess: ({ data }) => {
-          onOpenChange(false)
-          form.reset()
           onSuccess()
           if (data?.exerciseList) {
+            setIsRedirecting(true)
             router.push(`/listas/${data.exerciseList.id}/resolver`)
           }
         },
@@ -85,6 +86,7 @@ export function CreateExerciseListDialog({
   })
 
   function handleOpenChange(value: boolean) {
+    if (isRedirecting) return
     if (!value) form.reset()
     onOpenChange(value)
   }
@@ -119,6 +121,14 @@ export function CreateExerciseListDialog({
                 className="rounded border-input"
               />
               Embaralhar questões
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                {...register('ignoreAnswered')}
+                className="rounded border-input"
+              />
+              Ignorar questões já respondidas
             </label>
           </div>
 
@@ -249,11 +259,27 @@ export function CreateExerciseListDialog({
               type="button"
               variant="outline"
               onClick={() => handleOpenChange(false)}
+              disabled={action.isPending || isRedirecting}
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={action.isPending}>
-              {action.isPending ? 'Criando...' : 'Criar lista'}
+            <Button
+              type="submit"
+              disabled={action.isPending || isRedirecting}
+            >
+              {isRedirecting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Redirecionando...
+                </>
+              ) : action.isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Criando...
+                </>
+              ) : (
+                'Criar lista'
+              )}
             </Button>
           </DialogFooter>
         </form>
