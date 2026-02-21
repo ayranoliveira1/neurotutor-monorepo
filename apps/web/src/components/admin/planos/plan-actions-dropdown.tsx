@@ -8,7 +8,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
-import type { AdminPlan } from '@/actions/admin/list-plans-admin'
+import type { AdminPlan } from '@/actions/admin/planos/list-plans-admin'
 
 interface PlanActionsDropdownProps {
   plan: AdminPlan

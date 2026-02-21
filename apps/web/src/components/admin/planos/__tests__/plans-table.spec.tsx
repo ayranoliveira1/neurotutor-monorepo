@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { PlansTable } from '../plans-table'
-import type { AdminPlan } from '@/actions/admin/list-plans-admin'
+import type { AdminPlan } from '@/actions/admin/planos/list-plans-admin'
 
 vi.mock('@apps/utils', () => ({
   formatCurrency: vi.fn((value: number) => `R$ ${value}`),

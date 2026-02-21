@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { listPlansAdminAction } from '@/actions/admin/list-plans-admin'
+import { listPlansAdminAction } from '@/actions/admin/planos/list-plans-admin'
 
 export function usePlansAdminQuery() {
   return useQuery({

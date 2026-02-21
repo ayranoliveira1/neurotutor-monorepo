@@ -11,8 +11,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { updatePlanAction } from '@/actions/admin/update-plan'
-import type { AdminPlan } from '@/actions/admin/list-plans-admin'
+import { updatePlanAction } from '@/actions/admin/planos/update-plan'
+import type { AdminPlan } from '@/actions/admin/planos/list-plans-admin'
 
 interface TogglePlanDialogProps {
   plan: AdminPlan | null

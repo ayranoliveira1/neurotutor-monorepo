@@ -2,7 +2,7 @@
 
 import { actionClient } from '@/lib/safe-action'
 import { z } from 'zod'
-import { api } from '@/lib/api'
+import { api, handleApiError } from '@/lib/api'
 
 const deletePlanSchema = z.object({
   id: z.string().min(1),
@@ -16,11 +16,7 @@ export const deletePlanAction = actionClient
       { method: 'DELETE' },
     )
 
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.message || data.error || 'Erro ao excluir plano',
-      )
-    }
+    handleApiError(response, data, 'Erro ao excluir plano')
 
     return data.data
   })

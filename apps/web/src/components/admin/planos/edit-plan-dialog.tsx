@@ -17,8 +17,8 @@ import { Label } from '@/components/ui/label'
 import { Select } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { adminUpdatePlanSchema } from '@/schemas/admin'
-import { updatePlanAction } from '@/actions/admin/update-plan'
-import type { AdminPlan } from '@/actions/admin/list-plans-admin'
+import { updatePlanAction } from '@/actions/admin/planos/update-plan'
+import type { AdminPlan } from '@/actions/admin/planos/list-plans-admin'
 
 interface EditPlanDialogProps {
   plan: AdminPlan | null

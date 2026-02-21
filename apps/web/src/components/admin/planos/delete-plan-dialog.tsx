@@ -11,8 +11,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
-import { deletePlanAction } from '@/actions/admin/delete-plan'
-import type { AdminPlan } from '@/actions/admin/list-plans-admin'
+import { deletePlanAction } from '@/actions/admin/planos/delete-plan'
+import type { AdminPlan } from '@/actions/admin/planos/list-plans-admin'
 
 interface DeletePlanDialogProps {
   plan: AdminPlan | null

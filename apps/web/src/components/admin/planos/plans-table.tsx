@@ -11,7 +11,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { CreditCard, Calendar } from 'lucide-react'
 import { formatCurrency } from '@apps/utils'
-import type { AdminPlan } from '@/actions/admin/list-plans-admin'
+import type { AdminPlan } from '@/actions/admin/planos/list-plans-admin'
 import { PlanActionsDropdown } from './plan-actions-dropdown'
 
 interface PlansTableProps {
