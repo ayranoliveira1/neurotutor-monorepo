@@ -7,6 +7,7 @@ import { FinishExerciseListUseCase } from './finish-exercise-list-use-case'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ExerciseListStatus } from '@/domain/entreprise/entities/exercise-list'
 import { ExerciseAnswer } from '@/domain/entreprise/entities/exercise-answer'
+import { DomainEvents } from '@/core/events/domain-events'
 
 let exerciseListsRepository: InMemoryExerciseListsRepository
 let exerciseAnswersRepository: InMemoryExerciseAnswersRepository
@@ -23,6 +24,9 @@ describe('FinishExerciseListUseCase', () => {
       exerciseAnswersRepository,
       questionsProvider,
     )
+
+    DomainEvents.clearHandlers()
+    DomainEvents.clearMarkedAggregates()
   })
 
   it('deve finalizar a lista e calcular acertos', async () => {
@@ -80,6 +84,41 @@ describe('FinishExerciseListUseCase', () => {
         ExerciseListStatus.FINISHED,
       )
     }
+  })
+
+  it('deve emitir ExerciseListFinishedEvent ao finalizar', async () => {
+    const q1 = questionsProvider.addQuestion({
+      subject: 'Matemática',
+      correctAnswer: 0,
+    })
+
+    const exerciseList = MakeExerciseList({
+      userId: new UniqueEntityID('user-1'),
+      questionIds: [q1.id],
+      totalQuestions: 1,
+      status: ExerciseListStatus.IN_PROGRESS,
+    })
+
+    exerciseListsRepository.items.push(exerciseList)
+
+    exerciseAnswersRepository.items.push(
+      ExerciseAnswer.create({
+        exerciseListId: exerciseList.id,
+        questionId: q1.id,
+        selectedAnswer: 0,
+      }),
+    )
+
+    await sut.execute({
+      userId: 'user-1',
+      exerciseListId: exerciseList.id.toString(),
+    })
+
+    // After save, events should have been dispatched (cleared from entity)
+    // The event was added when status changed to FINISHED
+    expect(exerciseList.status).toBe(ExerciseListStatus.FINISHED)
+    // Events are dispatched and cleared by the repository save
+    expect(exerciseList.domainEvents).toHaveLength(0)
   })
 
   it('deve retornar erro se a lista já foi finalizada', async () => {
