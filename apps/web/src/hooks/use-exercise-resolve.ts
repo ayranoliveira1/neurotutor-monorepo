@@ -28,6 +28,8 @@ export function useExerciseResolve(exerciseListId: string) {
   const finishAction = useAction(finishExerciseListAction, {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['exercise-lists'] })
+      queryClient.invalidateQueries({ queryKey: ['study-plans'] })
+      queryClient.invalidateQueries({ queryKey: ['study-plan-progress'] })
       router.push(`/listas/${exerciseListId}/resultado`)
     },
     onError: ({ error }) => {
