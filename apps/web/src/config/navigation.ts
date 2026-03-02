@@ -6,6 +6,7 @@ import {
   Bell,
   ClipboardList,
   HelpCircle,
+  Target,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -27,6 +28,7 @@ export const navigationGroups: NavGroup[] = [
     items: [
       { label: 'Home', href: '/home', icon: Home },
       { label: 'Listas de Exercícios', href: '/listas', icon: ClipboardList },
+      { label: 'Planos de Estudo', href: '/planos-estudo', icon: Target },
     ],
   },
   {
