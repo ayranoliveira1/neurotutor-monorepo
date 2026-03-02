@@ -16,6 +16,8 @@ export class ExerciseListMapper {
         ignoreAnswered: raw.ignoreAnswered,
         sections: raw.sections as ExerciseListSection[],
         questionIds: raw.questionIds as string[],
+        questionSubjectMap:
+          (raw.questionSubjectMap as Record<string, string>) ?? {},
         totalQuestions: raw.totalQuestions,
         status: raw.status as ExerciseListStatus,
         correctCount: raw.correctCount,
@@ -35,6 +37,8 @@ export class ExerciseListMapper {
       ignoreAnswered: exerciseList.ignoreAnswered,
       sections: exerciseList.sections as unknown as Prisma.InputJsonValue,
       questionIds: exerciseList.questionIds as unknown as Prisma.InputJsonValue,
+      questionSubjectMap:
+        exerciseList.questionSubjectMap as unknown as Prisma.InputJsonValue,
       totalQuestions: exerciseList.totalQuestions,
       status: exerciseList.status,
       correctCount: exerciseList.correctCount,

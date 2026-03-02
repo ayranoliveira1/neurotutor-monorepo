@@ -10,4 +10,10 @@ export abstract class ExerciseAnswersRepository {
   abstract countByListId(exerciseListId: string): Promise<number>
   abstract saveManyIsCorrect(answers: ExerciseAnswer[]): Promise<void>
   abstract findAnsweredQuestionIdsByUserId(userId: string): Promise<string[]>
+  abstract countByUserAndSubjectsInDateRange(
+    userId: string,
+    subjects: string[],
+    startDate: Date,
+    endDate: Date,
+  ): Promise<Map<string, number>>
 }

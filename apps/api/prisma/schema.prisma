@@ -27,6 +27,7 @@ model User {
   subscriptions          Subscription[]
   ratings                Rating[]
   exerciseLists          ExerciseList[]
+  studyPlans             StudyPlan[]
 
   @@map("users")
 }
@@ -162,6 +163,7 @@ model ExerciseList {
   createdAt        DateTime           @default(now()) @map("created_at")
   updatedAt        DateTime           @updatedAt @map("updated_at")
   user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionSubjectMap Json          @default("{}") @map("question_subject_map")
   answers          ExerciseAnswer[]
 
   @@index([userId])
@@ -187,6 +189,61 @@ enum ExerciseListStatus {
   PENDING
   IN_PROGRESS
   FINISHED
+}
+
+enum StudyPlanStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+model StudyPlan {
+  id          String          @id @default(uuid())
+  userId      String          @map("user_id")
+  name        String
+  description String?
+  status      StudyPlanStatus @default(ACTIVE)
+  startDate   DateTime        @map("start_date")
+  endDate     DateTime        @map("end_date")
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goals       StudyPlanGoal[]
+  goalProgress StudyPlanGoalProgress[]
+
+  @@index([userId])
+  @@index([userId, status])
+  @@map("study_plans")
+}
+
+model StudyPlanGoal {
+  id                    String    @id @default(uuid())
+  studyPlanId           String    @map("study_plan_id")
+  subject               String
+  weeklyQuestionsTarget Int       @map("weekly_questions_target")
+  targetAccuracyPercent Int?      @map("target_accuracy_percent")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
+  studyPlan             StudyPlan @relation(fields: [studyPlanId], references: [id], onDelete: Cascade)
+
+  @@unique([studyPlanId, subject])
+  @@index([studyPlanId])
+  @@map("study_plan_goals")
+}
+
+model StudyPlanGoalProgress {
+  id            String    @id @default(uuid())
+  studyPlanId   String    @map("study_plan_id")
+  goalId        String    @map("goal_id")
+  subject       String
+  totalAnswered Int       @default(0) @map("total_answered")
+  correctCount  Int       @default(0) @map("correct_count")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  studyPlan     StudyPlan @relation(fields: [studyPlanId], references: [id], onDelete: Cascade)
+
+  @@unique([studyPlanId, subject])
+  @@index([studyPlanId])
+  @@map("study_plan_goal_progress")
 }
 
 enum BillingCycle {

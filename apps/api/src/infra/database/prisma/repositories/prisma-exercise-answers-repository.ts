@@ -73,6 +73,37 @@ export class PrismaExerciseAnswersRepository
     return answers.map((a) => a.questionId)
   }
 
+  async countByUserAndSubjectsInDateRange(
+    userId: string,
+    subjects: string[],
+    startDate: Date,
+    endDate: Date,
+  ): Promise<Map<string, number>> {
+    const result = new Map<string, number>()
+
+    if (subjects.length === 0) return result
+
+    const rows = await this.prisma.$queryRaw<
+      { subject: string; count: number }[]
+    >`SELECT
+        el.question_subject_map ->> ea.question_id AS subject,
+        COUNT(*)::int AS count
+      FROM exercise_answers ea
+      JOIN exercise_lists el ON ea.exercise_list_id = el.id
+      WHERE el.user_id = ${userId}
+        AND el.status = 'FINISHED'
+        AND el.created_at >= ${startDate}
+        AND el.created_at <= ${endDate}
+        AND el.question_subject_map ->> ea.question_id = ANY(${subjects})
+      GROUP BY el.question_subject_map ->> ea.question_id`
+
+    for (const row of rows) {
+      result.set(row.subject, row.count)
+    }
+
+    return result
+  }
+
   async saveManyIsCorrect(answers: ExerciseAnswer[]): Promise<void> {
     await this.prisma.$transaction(
       answers.map((answer) => {

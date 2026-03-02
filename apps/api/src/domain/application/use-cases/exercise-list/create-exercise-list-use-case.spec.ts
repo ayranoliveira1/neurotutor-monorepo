@@ -150,6 +150,41 @@ describe('CreateExerciseListUseCase', () => {
     expect(secondResult.isLeft()).toBe(true)
   })
 
+  it('deve gerar questionSubjectMap correto mesmo com shuffle', async () => {
+    const result = await sut.execute({
+      userId: 'user-1',
+      name: 'Lista Shuffle Map',
+      shuffleQuestions: true,
+      sections: [
+        { subject: 'Matemática', quantity: 3 },
+        { subject: 'Português', quantity: 2 },
+      ],
+    })
+
+    expect(result.isRight()).toBe(true)
+
+    if (result.isRight()) {
+      const { exerciseList } = result.value
+      const map = exerciseList.questionSubjectMap
+
+      const mathCount = Object.values(map).filter(
+        (s) => s === 'Matemática',
+      ).length
+      const portCount = Object.values(map).filter(
+        (s) => s === 'Português',
+      ).length
+
+      expect(mathCount).toBe(3)
+      expect(portCount).toBe(2)
+      expect(Object.keys(map)).toHaveLength(5)
+
+      // Each questionId should be in the map regardless of shuffle
+      for (const qId of exerciseList.questionIds) {
+        expect(map[qId]).toBeDefined()
+      }
+    }
+  })
+
   it('deve permitir questões repetidas quando ignoreAnswered=false', async () => {
     const firstResult = await sut.execute({
       userId: 'user-1',

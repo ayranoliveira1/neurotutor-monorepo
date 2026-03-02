@@ -8,6 +8,7 @@ import { ExerciseList } from '@/domain/entreprise/entities/exercise-list'
 import { ExerciseListPagination } from '@/core/repositories/exercise-list-pagination'
 import { ExerciseListMapper } from '../mappers/prisma-exercise-list-mapper'
 import { Prisma } from '@/infra/generated/prisma'
+import { DomainEvents } from '@/core/events/domain-events'
 
 @Injectable()
 export class PrismaExerciseListsRepository implements ExerciseListsRepository {
@@ -103,6 +104,8 @@ export class PrismaExerciseListsRepository implements ExerciseListsRepository {
       where: { id: data.id },
       data,
     })
+
+    DomainEvents.dispatchEventsForAggregate(exerciseList.id)
   }
 
   async delete(id: string): Promise<void> {
