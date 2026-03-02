@@ -63,6 +63,38 @@ export class InMemoryExerciseAnswersRepository
     return [...new Set(questionIds)]
   }
 
+  async countByUserAndSubjectsInDateRange(
+    userId: string,
+    subjects: string[],
+    startDate: Date,
+    endDate: Date,
+  ): Promise<Map<string, number>> {
+    const result = new Map<string, number>()
+
+    const userLists = (this.exerciseListsRepository?.items ?? []).filter(
+      (list) =>
+        list.userId.toString() === userId &&
+        list.status === 'FINISHED' &&
+        list.createdAt >= startDate &&
+        list.createdAt <= endDate,
+    )
+
+    for (const list of userLists) {
+      const listAnswers = this.items.filter(
+        (a) => a.exerciseListId.toString() === list.id.toString(),
+      )
+
+      for (const answer of listAnswers) {
+        const subject = list.questionSubjectMap[answer.questionId]
+        if (subject && subjects.includes(subject)) {
+          result.set(subject, (result.get(subject) ?? 0) + 1)
+        }
+      }
+    }
+
+    return result
+  }
+
   async saveManyIsCorrect(answers: ExerciseAnswer[]): Promise<void> {
     for (const answer of answers) {
       const index = this.items.findIndex(
