@@ -30,7 +30,7 @@ export class CreateExerciseListUseCase {
   constructor(
     private exerciseListsRepository: ExerciseListsRepository,
     private questionsProvider: QuestionsProvider,
-    private exerciseAnswersRepository: ExerciseAnswersRepository,
+    private exerciseAnswersRepository: ExerciseAnswersRepository
   ) {}
 
   async execute({
@@ -45,7 +45,7 @@ export class CreateExerciseListUseCase {
     if (ignoreAnswered) {
       const answeredIds =
         await this.exerciseAnswersRepository.findAnsweredQuestionIdsByUserId(
-          userId,
+          userId
         )
       excludeIds.push(...answeredIds)
     }
@@ -71,11 +71,24 @@ export class CreateExerciseListUseCase {
         return left(
           new ResourceNotFoundError({
             errors: [{ message }],
-          }),
+          })
         )
       }
 
       selectedQuestionIds.push(...questions.map((q) => q.id))
+    }
+
+    const questionSubjectMap: Record<string, string> = {}
+    let offset = 0
+    for (const section of sections) {
+      for (
+        let i = 0;
+        i < section.quantity && offset + i < selectedQuestionIds.length;
+        i++
+      ) {
+        questionSubjectMap[selectedQuestionIds[offset + i]] = section.subject
+      }
+      offset += section.quantity
     }
 
     if (shuffleQuestions) {
@@ -95,6 +108,7 @@ export class CreateExerciseListUseCase {
       ignoreAnswered,
       sections,
       questionIds: selectedQuestionIds,
+      questionSubjectMap,
       totalQuestions: selectedQuestionIds.length,
     })
 

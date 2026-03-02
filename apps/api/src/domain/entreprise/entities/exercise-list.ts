@@ -1,6 +1,7 @@
-import { Entity } from '@/core/entities/entity'
+import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
+import { ExerciseListFinishedEvent } from '@/domain/entreprise/events/exercise-list-finished-event'
 
 export enum ExerciseListStatus {
   PENDING = 'PENDING',
@@ -24,6 +25,7 @@ export interface ExerciseListProps {
   ignoreAnswered: boolean
   sections: ExerciseListSection[]
   questionIds: string[]
+  questionSubjectMap: Record<string, string>
   totalQuestions: number
   status: ExerciseListStatus
   correctCount: number | null
@@ -33,7 +35,7 @@ export interface ExerciseListProps {
   updatedAt?: Date
 }
 
-export class ExerciseList extends Entity<ExerciseListProps> {
+export class ExerciseList extends AggregateRoot<ExerciseListProps> {
   get userId() {
     return this.props.userId
   }
@@ -63,6 +65,10 @@ export class ExerciseList extends Entity<ExerciseListProps> {
     return this.props.questionIds
   }
 
+  get questionSubjectMap() {
+    return this.props.questionSubjectMap
+  }
+
   get totalQuestions() {
     return this.props.totalQuestions
   }
@@ -72,6 +78,12 @@ export class ExerciseList extends Entity<ExerciseListProps> {
   }
 
   set status(status: ExerciseListStatus) {
+    if (
+      status === ExerciseListStatus.FINISHED &&
+      this.props.status !== ExerciseListStatus.FINISHED
+    ) {
+      this.addDomainEvent(new ExerciseListFinishedEvent(this))
+    }
     this.props.status = status
     this.touch()
   }
@@ -124,6 +136,7 @@ export class ExerciseList extends Entity<ExerciseListProps> {
       | 'avgTimePerQuestion'
       | 'shuffleQuestions'
       | 'ignoreAnswered'
+      | 'questionSubjectMap'
     >,
     id?: UniqueEntityID,
   ): ExerciseList {
@@ -132,6 +145,7 @@ export class ExerciseList extends Entity<ExerciseListProps> {
         ...props,
         shuffleQuestions: props.shuffleQuestions ?? false,
         ignoreAnswered: props.ignoreAnswered ?? false,
+        questionSubjectMap: props.questionSubjectMap ?? {},
         status: props.status ?? ExerciseListStatus.PENDING,
         correctCount: props.correctCount ?? null,
         totalTimeSeconds: props.totalTimeSeconds ?? null,
