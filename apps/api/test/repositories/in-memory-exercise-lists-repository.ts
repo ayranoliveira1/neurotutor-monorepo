@@ -4,6 +4,7 @@ import {
   type FindManyExerciseListsParams,
 } from '@/domain/application/repositories/exercise-lists-repository'
 import { ExerciseList } from '@/domain/entreprise/entities/exercise-list'
+import { DomainEvents } from '@/core/events/domain-events'
 
 export class InMemoryExerciseListsRepository
   implements ExerciseListsRepository
@@ -65,6 +66,8 @@ export class InMemoryExerciseListsRepository
     if (index >= 0) {
       this.items[index] = exerciseList
     }
+
+    DomainEvents.dispatchEventsForAggregate(exerciseList.id)
   }
 
   async delete(id: string): Promise<void> {
@@ -74,4 +77,5 @@ export class InMemoryExerciseListsRepository
   async existsByQuestionId(questionId: string): Promise<boolean> {
     return this.items.some((list) => list.questionIds.includes(questionId))
   }
+
 }
