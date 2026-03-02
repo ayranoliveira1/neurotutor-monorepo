@@ -6,9 +6,10 @@ import { WebhookModule } from './webhooks/webhook.module'
 import { RatingModule } from './controllers/rating/rating.module'
 import { NotificationModule } from './controllers/notification/notification.module'
 import { ExerciseListModule } from './controllers/exercise-list/exercise-list.module'
+import { StudyPlanModule } from './controllers/study-plan/study-plan.module'
 
 @Module({
-  imports: [AccountModule, AdminModule, PaymentControllerModule, WebhookModule, RatingModule, NotificationModule, ExerciseListModule],
+  imports: [AccountModule, AdminModule, PaymentControllerModule, WebhookModule, RatingModule, NotificationModule, ExerciseListModule, StudyPlanModule],
   controllers: [],
   providers: [],
 })

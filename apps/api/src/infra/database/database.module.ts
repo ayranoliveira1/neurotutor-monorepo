@@ -16,6 +16,10 @@ import { ExerciseListsRepository } from '@/domain/application/repositories/exerc
 import { PrismaExerciseListsRepository } from './prisma/repositories/prisma-exercise-lists-repository'
 import { ExerciseAnswersRepository } from '@/domain/application/repositories/exercise-answers-repository'
 import { PrismaExerciseAnswersRepository } from './prisma/repositories/prisma-exercise-answers-repository'
+import { StudyPlansRepository } from '@/domain/application/repositories/study-plans-repository'
+import { PrismaStudyPlansRepository } from './prisma/repositories/prisma-study-plans-repository'
+import { StudyPlanGoalProgressRepository } from '@/domain/application/repositories/study-plan-goal-progress-repository'
+import { PrismaStudyPlanGoalProgressRepository } from './prisma/repositories/prisma-study-plan-goal-progress-repository'
 
 @Global()
 @Module({
@@ -61,6 +65,16 @@ import { PrismaExerciseAnswersRepository } from './prisma/repositories/prisma-ex
       provide: ExerciseAnswersRepository,
       useClass: PrismaExerciseAnswersRepository
     },
+
+    {
+      provide: StudyPlansRepository,
+      useClass: PrismaStudyPlansRepository
+    },
+
+    {
+      provide: StudyPlanGoalProgressRepository,
+      useClass: PrismaStudyPlanGoalProgressRepository
+    },
   ],
   exports: [
     PrismaService,
@@ -72,6 +86,8 @@ import { PrismaExerciseAnswersRepository } from './prisma/repositories/prisma-ex
     NotificationsRepository,
     ExerciseListsRepository,
     ExerciseAnswersRepository,
+    StudyPlansRepository,
+    StudyPlanGoalProgressRepository,
   ],
 })
 export class DatabaseModule { }
