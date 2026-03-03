@@ -23,6 +23,14 @@ vi.mock('next/link', () => ({
 
 vi.mock('next/navigation', () => ({
   usePathname: () => '/dashboard',
+  useRouter: () => ({ push: vi.fn() }),
+}))
+
+vi.mock('@/contexts/navigation-guard-context', () => ({
+  useNavigationGuard: () => ({
+    isBlocked: false,
+    requestNavigation: (fn: () => void) => fn(),
+  }),
 }))
 
 function OpenButton() {

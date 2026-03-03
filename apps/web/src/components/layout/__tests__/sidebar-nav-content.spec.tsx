@@ -22,6 +22,17 @@ vi.mock('next/link', () => ({
   ),
 }))
 
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}))
+
+vi.mock('@/contexts/navigation-guard-context', () => ({
+  useNavigationGuard: () => ({
+    isBlocked: false,
+    requestNavigation: (fn: () => void) => fn(),
+  }),
+}))
+
 function renderWithProvider(
   ui: React.ReactElement,
   { userRole = null }: { userRole?: string | null } = {}
