@@ -20,6 +20,8 @@ import { StudyPlansRepository } from '@/domain/application/repositories/study-pl
 import { PrismaStudyPlansRepository } from './prisma/repositories/prisma-study-plans-repository'
 import { StudyPlanGoalProgressRepository } from '@/domain/application/repositories/study-plan-goal-progress-repository'
 import { PrismaStudyPlanGoalProgressRepository } from './prisma/repositories/prisma-study-plan-goal-progress-repository'
+import { FocusedStudySessionsRepository } from '@/domain/application/repositories/focused-study-sessions-repository'
+import { PrismaFocusedStudySessionsRepository } from './prisma/repositories/prisma-focused-study-sessions-repository'
 
 @Global()
 @Module({
@@ -75,6 +77,11 @@ import { PrismaStudyPlanGoalProgressRepository } from './prisma/repositories/pri
       provide: StudyPlanGoalProgressRepository,
       useClass: PrismaStudyPlanGoalProgressRepository
     },
+
+    {
+      provide: FocusedStudySessionsRepository,
+      useClass: PrismaFocusedStudySessionsRepository
+    },
   ],
   exports: [
     PrismaService,
@@ -88,6 +95,7 @@ import { PrismaStudyPlanGoalProgressRepository } from './prisma/repositories/pri
     ExerciseAnswersRepository,
     StudyPlansRepository,
     StudyPlanGoalProgressRepository,
+    FocusedStudySessionsRepository,
   ],
 })
 export class DatabaseModule { }
