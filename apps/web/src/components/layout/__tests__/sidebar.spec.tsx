@@ -23,6 +23,14 @@ vi.mock('next/link', () => ({
 const mockUsePathname = vi.fn()
 vi.mock('next/navigation', () => ({
   usePathname: () => mockUsePathname(),
+  useRouter: () => ({ push: vi.fn() }),
+}))
+
+vi.mock('@/contexts/navigation-guard-context', () => ({
+  useNavigationGuard: () => ({
+    isBlocked: false,
+    requestNavigation: (fn: () => void) => fn(),
+  }),
 }))
 
 function renderSidebar() {

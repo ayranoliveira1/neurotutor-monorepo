@@ -18,6 +18,17 @@ vi.mock('next/link', () => ({
   ),
 }))
 
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}))
+
+vi.mock('@/contexts/navigation-guard-context', () => ({
+  useNavigationGuard: () => ({
+    isBlocked: false,
+    requestNavigation: (fn: () => void) => fn(),
+  }),
+}))
+
 describe('SidebarNavItem', () => {
   it('should render with label and link', () => {
     render(
