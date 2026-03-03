@@ -8,6 +8,7 @@ import { Sidebar } from '@/components/layout/sidebar'
 import { MobileSidebar } from '@/components/layout/mobile-sidebar'
 import { AppHeader } from '@/components/layout/app-header'
 import { RatingPopup } from '@/components/rating/rating-popup'
+import { NavigationGuardProvider } from '@/contexts/navigation-guard-context'
 
 export default async function PrivateLayout({
   children,
@@ -27,17 +28,19 @@ export default async function PrivateLayout({
     <ThemeProvider>
       <SocketProvider userId={user?.id ?? ''}>
         <SidebarProvider userRole={user?.role ?? null}>
-          <div className="flex min-h-screen">
-            <Sidebar />
-            <MobileSidebar />
-            <div className="flex flex-1 flex-col">
-              {user && <AppHeader user={user} />}
-              <main className="flex-1 bg-muted/30 p-4 md:p-6">
-                {children}
-              </main>
+          <NavigationGuardProvider>
+            <div className="flex min-h-screen">
+              <Sidebar />
+              <MobileSidebar />
+              <div className="flex min-w-0 flex-1 flex-col">
+                {user && <AppHeader user={user} />}
+                <main className="flex-1 bg-muted/30 p-4 md:p-6">
+                  {children}
+                </main>
+              </div>
             </div>
-          </div>
-          {user && <RatingPopup userId={user.id} />}
+            {user && <RatingPopup userId={user.id} />}
+          </NavigationGuardProvider>
         </SidebarProvider>
       </SocketProvider>
     </ThemeProvider>
