@@ -1,9 +1,5 @@
 import { Logger } from '@nestjs/common'
-import {
-  Processor,
-  WorkerHost,
-  OnWorkerEvent,
-} from '@nestjs/bullmq'
+import { Processor, WorkerHost, OnWorkerEvent } from '@nestjs/bullmq'
 import { Job } from 'bullmq'
 import { NotificationsRepository } from '@/domain/application/repositories/notifications-repository'
 import { UsersRepository } from '@/domain/application/repositories/users-repository'
@@ -24,14 +20,12 @@ export class NotificationRecipientsProcessor extends WorkerHost {
   constructor(
     private readonly notificationsRepository: NotificationsRepository,
     private readonly usersRepository: UsersRepository,
-    private readonly socketProvider: SocketProvider,
+    private readonly socketProvider: SocketProvider
   ) {
     super()
   }
 
-  async process(
-    job: Job<EnqueueNotificationRecipientsData>,
-  ): Promise<void> {
+  async process(job: Job<EnqueueNotificationRecipientsData>): Promise<void> {
     const { notificationId, sendToAll, recipientIds } = job.data
 
     let userIds = recipientIds
@@ -43,13 +37,12 @@ export class NotificationRecipientsProcessor extends WorkerHost {
 
     if (totalUsers === 0) {
       this.logger.warn(
-        `Nenhum destinatário para notificação ${notificationId} — removendo notificação órfã`,
+        `Nenhum destinatário para notificação ${notificationId} — removendo notificação órfã`
       )
       await this.notificationsRepository.delete(notificationId)
       return
     }
 
-    // Insert recipients in batches
     for (let i = 0; i < totalUsers; i += RECIPIENT_BATCH_SIZE) {
       const batch = userIds
         .slice(i, i + RECIPIENT_BATCH_SIZE)
@@ -57,7 +50,7 @@ export class NotificationRecipientsProcessor extends WorkerHost {
 
       await this.notificationsRepository.createManyRecipients(
         notificationId,
-        batch,
+        batch
       )
 
       const insertProgress = Math.round(((i + batch.length) / totalUsers) * 50)
@@ -66,18 +59,16 @@ export class NotificationRecipientsProcessor extends WorkerHost {
       await yieldEventLoop()
     }
 
-    // Fetch notification without recipients (lightweight query)
     const notification =
       await this.notificationsRepository.findByIdOnly(notificationId)
 
     if (!notification) {
       this.logger.warn(
-        `Notificação ${notificationId} não encontrada após inserir recipients`,
+        `Notificação ${notificationId} não encontrada após inserir recipients`
       )
       return
     }
 
-    // Emit WebSocket events in batches
     for (let i = 0; i < totalUsers; i += WEBSOCKET_BATCH_SIZE) {
       const batch = userIds.slice(i, i + WEBSOCKET_BATCH_SIZE)
 
@@ -98,8 +89,7 @@ export class NotificationRecipientsProcessor extends WorkerHost {
         this.socketProvider.emitToUser(userId, 'notification', payload)
       }
 
-      const wsProgress =
-        50 + Math.round(((i + batch.length) / totalUsers) * 50)
+      const wsProgress = 50 + Math.round(((i + batch.length) / totalUsers) * 50)
       await job.updateProgress(wsProgress)
 
       await yieldEventLoop()
@@ -109,14 +99,14 @@ export class NotificationRecipientsProcessor extends WorkerHost {
   @OnWorkerEvent('completed')
   onCompleted(job: Job<EnqueueNotificationRecipientsData>) {
     this.logger.log(
-      `Job ${job.id} concluído — notificação ${job.data.notificationId}`,
+      `Job ${job.id} concluído — notificação ${job.data.notificationId}`
     )
   }
 
   @OnWorkerEvent('failed')
   onFailed(job: Job<EnqueueNotificationRecipientsData>, error: Error) {
     this.logger.error(
-      `Job ${job.id} falhou — notificação ${job.data.notificationId}: ${error.message}`,
+      `Job ${job.id} falhou — notificação ${job.data.notificationId}: ${error.message}`
     )
   }
 }
