@@ -28,9 +28,7 @@ const mockResponse = {
       id: 'notif-1',
       title: 'Nova funcionalidade',
       content: 'Confira a nova funcionalidade!',
-      destination: {
-        sendIds: [{ userId: 'user-1', readAt: null }],
-      },
+      readAt: null,
       createdAt: '2025-01-15T00:00:00.000Z',
       updatedAt: null,
     },
