@@ -18,9 +18,10 @@ interface ClientData {
 }
 
 const DEBUG_ENABLED = process.env.NODE_ENV === 'development'
+const CORS_ORIGIN = process.env.CORS_ORIGIN ?? 'http://localhost:3000'
 
 @WebSocketGateway({
-  cors: { origin: true, credentials: true },
+  cors: { origin: CORS_ORIGIN, credentials: true },
   pingTimeout: 30000,
   pingInterval: 25000,
 })
@@ -91,18 +92,24 @@ export class NotificationGateway
   }
 
   async sendNotification(props: { notification: Notification }): Promise<void> {
-    const payload = {
-      event: 'notification',
-      data: {
-        notification: NotificationPresenter.toHTTP(props.notification),
-      },
-    }
+    const sendIds = props.notification.sendIds
 
-    const sendIds = props.notification.destination.sendIds || []
-
-    for (const id of sendIds) {
-      this.safeEmit(`user:${id.userId}`, 'notification', payload)
+    for (const recipient of sendIds) {
+      const payload = {
+        event: 'notification',
+        data: {
+          notification: NotificationPresenter.toUserHTTP(
+            props.notification,
+            recipient.userId,
+          ),
+        },
+      }
+      this.safeEmit(`user:${recipient.userId}`, 'notification', payload)
     }
+  }
+
+  emitToUser(userId: string, event: string, payload: unknown): void {
+    this.safeEmit(`user:${userId}`, event, payload)
   }
 
   @SubscribeMessage('ping')
