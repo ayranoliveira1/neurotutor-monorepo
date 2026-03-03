@@ -28,6 +28,7 @@ model User {
   ratings                Rating[]
   exerciseLists          ExerciseList[]
   studyPlans             StudyPlan[]
+  focusedStudySessions   FocusedStudySession[]
 
   @@map("users")
 }
@@ -244,6 +245,31 @@ model StudyPlanGoalProgress {
   @@unique([studyPlanId, subject])
   @@index([studyPlanId])
   @@map("study_plan_goal_progress")
+}
+
+enum FocusedStudySessionStatus {
+  COMPLETED
+  ABANDONED
+}
+
+model FocusedStudySession {
+  id                    String                    @id @default(uuid())
+  userId                String                    @map("user_id")
+  status                FocusedStudySessionStatus
+  pomodoroIntervalMins  Int                       @map("pomodoro_interval_mins")
+  breakDurationMins     Int                       @map("break_duration_mins")
+  pomodorosCompleted    Int                       @map("pomodoros_completed")
+  totalTimeSpentSeconds Int                       @map("total_time_spent_seconds")
+  startedAt             DateTime                  @map("started_at")
+  completedAt           DateTime                  @map("completed_at")
+  createdAt             DateTime                  @default(now()) @map("created_at")
+  updatedAt             DateTime                  @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, createdAt])
+  @@map("focused_study_sessions")
 }
 
 enum BillingCycle {
