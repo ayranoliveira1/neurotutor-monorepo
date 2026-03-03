@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { CreateNotificationDialog } from '../create-notification-dialog'
 
 vi.mock('@next-safe-action/adapter-react-hook-form/hooks', async () => {
@@ -25,7 +24,7 @@ vi.mock('@hookform/resolvers/zod', () => ({
   zodResolver: (schema: unknown) => schema,
 }))
 
-vi.mock('@/actions/admin/create-notification', () => ({
+vi.mock('@/actions/admin/notificacoes/create-notification', () => ({
   createNotificationAction: vi.fn(),
 }))
 
@@ -63,6 +62,12 @@ vi.mock('@/components/ui/dialog', () => ({
 vi.mock('@/components/ui/input', () => ({
   Input: (props: React.InputHTMLAttributes<HTMLInputElement>) => (
     <input {...props} />
+  ),
+}))
+
+vi.mock('@/components/ui/textarea', () => ({
+  Textarea: (props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) => (
+    <textarea {...props} />
   ),
 }))
 

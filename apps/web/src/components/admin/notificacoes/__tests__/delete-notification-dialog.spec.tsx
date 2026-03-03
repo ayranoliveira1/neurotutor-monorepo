@@ -24,7 +24,7 @@ vi.mock('next-safe-action/hooks', () => ({
   },
 }))
 
-vi.mock('@/actions/admin/delete-notification', () => ({
+vi.mock('@/actions/admin/notificacoes/delete-notification', () => ({
   adminDeleteNotificationAction: vi.fn(),
 }))
 
