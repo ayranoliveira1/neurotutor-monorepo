@@ -12,6 +12,15 @@ import { io, type Socket } from 'socket.io-client'
 import { useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { Info } from 'lucide-react'
+import { z } from 'zod'
+
+const socketNotificationSchema = z.object({
+  data: z.object({
+    notification: z.object({
+      title: z.string(),
+    }),
+  }),
+})
 
 interface SocketContextValue {
   isConnected: boolean
@@ -55,9 +64,9 @@ export function SocketProvider({ userId, children }: SocketProviderProps) {
     socket.on('notification', (payload: unknown) => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] })
 
-      const data = payload as { data?: { notification?: { title?: string } } }
-      const title = data?.data?.notification?.title
-      if (title) {
+      const parsed = socketNotificationSchema.safeParse(payload)
+      if (parsed.success) {
+        const title = parsed.data.data.notification.title
         toast.custom((id) => (
           <button
             type="button"

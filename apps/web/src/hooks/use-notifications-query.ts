@@ -7,5 +7,6 @@ export function useNotificationsQuery() {
   return useQuery({
     queryKey: ['notifications'],
     queryFn: () => fetchNotificationsAction(),
+    staleTime: 30 * 1000,
   })
 }
