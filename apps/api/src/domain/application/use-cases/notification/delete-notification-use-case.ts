@@ -40,11 +40,7 @@ export class DeleteNotificationUseCase {
       )
     }
 
-    if (
-      !notification.destination.sendIds
-        .map((id) => id.userId)
-        .includes(userId)
-    ) {
+    if (!notification.isRecipient(userId)) {
       return left(
         new NotAllowedError({
           statusCode: 403,
@@ -57,14 +53,11 @@ export class DeleteNotificationUseCase {
       )
     }
 
-    const updatedSendIds = notification.destination.sendIds.filter(
-      (id) => id.userId !== userId,
-    )
+    notification.removeRecipient(userId)
 
-    if (updatedSendIds.length === 0) {
+    if (notification.recipientCount === 0) {
       await this.notificationsRepository.delete(notificationId)
     } else {
-      notification.destination = { sendIds: updatedSendIds }
       await this.notificationsRepository.save(notification)
     }
 
