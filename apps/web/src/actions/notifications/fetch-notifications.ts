@@ -2,18 +2,11 @@
 
 import { api, handleApiError } from '@/lib/api'
 
-export interface NotificationSendId {
-  userId: string
-  readAt: string | null
-}
-
 export interface UserNotification {
   id: string
   title: string
   content: string
-  destination: {
-    sendIds: NotificationSendId[]
-  }
+  readAt: string | null
   createdAt: string
   updatedAt: string | null
 }

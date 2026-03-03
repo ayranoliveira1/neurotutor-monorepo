@@ -17,6 +17,12 @@ vi.mock('next-safe-action/hooks', () => ({
   }),
 }))
 
+vi.mock('sonner', () => ({
+  toast: {
+    error: vi.fn(),
+  },
+}))
+
 import { useNotificationsQuery } from '@/hooks/use-notifications-query'
 
 const mockUseNotificationsQuery = vi.mocked(useNotificationsQuery)
@@ -32,16 +38,12 @@ function createWrapper() {
   )
 }
 
-const userId = 'user-1'
-
 const mockNotifications = [
   {
     id: 'notif-1',
     title: 'Aviso importante',
     content: 'Conteúdo do aviso importante para você.',
-    destination: {
-      sendIds: [{ userId: 'user-1', readAt: null }],
-    },
+    readAt: null,
     createdAt: '2025-01-15T10:00:00.000Z',
     updatedAt: null,
   },
@@ -49,16 +51,14 @@ const mockNotifications = [
     id: 'notif-2',
     title: 'Notificação lida',
     content: 'Esta já foi lida.',
-    destination: {
-      sendIds: [{ userId: 'user-1', readAt: '2025-01-15T12:00:00.000Z' }],
-    },
+    readAt: '2025-01-15T12:00:00.000Z',
     createdAt: '2025-01-14T10:00:00.000Z',
     updatedAt: null,
   },
 ]
 
 function renderBell() {
-  return render(<NotificationBell userId={userId} />, {
+  return render(<NotificationBell />, {
     wrapper: createWrapper(),
   })
 }
@@ -90,11 +90,7 @@ describe('NotificationBell', () => {
         notifications: [
           {
             ...mockNotifications[0],
-            destination: {
-              sendIds: [
-                { userId: 'user-1', readAt: '2025-01-15T12:00:00.000Z' },
-              ],
-            },
+            readAt: '2025-01-15T12:00:00.000Z',
           },
         ],
       },
@@ -148,13 +144,10 @@ describe('NotificationBell', () => {
 
     expect(screen.getByText('Detalhes')).toBeInTheDocument()
 
-    const backButtons = screen.getAllByRole('button')
-    const backButton = backButtons.find((btn) =>
-      btn.querySelector('svg.lucide-arrow-left'),
-    )
+    const backButton = screen.getByLabelText('Voltar para lista')
     expect(backButton).toBeTruthy()
 
-    await user.click(backButton!)
+    await user.click(backButton)
 
     expect(screen.getByText('Notificação lida')).toBeInTheDocument()
   })

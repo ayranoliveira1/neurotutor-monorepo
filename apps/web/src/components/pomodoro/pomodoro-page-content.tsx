@@ -11,7 +11,6 @@ import { PomodoroCycleIndicator } from './pomodoro-cycle-indicator'
 import { PomodoroSoundSelector } from './pomodoro-sound-selector'
 import { PomodoroSettingsDialog } from './pomodoro-settings-dialog'
 import { PomodoroStatsCard } from './pomodoro-stats-card'
-import { PomodoroPageSkeleton } from './pomodoro-page-skeleton'
 
 const PHASE_BADGE_LABELS = {
   IDLE: null,

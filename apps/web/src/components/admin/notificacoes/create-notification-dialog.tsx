@@ -12,6 +12,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
@@ -96,11 +97,10 @@ export function CreateNotificationDialog({
 
           <div className="space-y-2">
             <Label htmlFor="notif-message">Mensagem</Label>
-            <textarea
+            <Textarea
               id="notif-message"
               placeholder="Conteúdo da notificação"
               rows={4}
-              className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               {...register('message')}
             />
             {errors.message && (

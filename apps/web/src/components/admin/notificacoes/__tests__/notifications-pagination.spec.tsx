@@ -65,13 +65,7 @@ describe('NotificationsPagination', () => {
     )
 
     expect(
-      screen.getByText(
-        (_, element) =>
-          element?.tagName === 'P' &&
-          !!element?.textContent?.includes('50') &&
-          !!element?.textContent?.includes('notifica\u00e7\u00e3o') &&
-          !!element?.textContent?.includes('encontrada'),
-      ),
+      screen.getByText('50 notificações encontradas'),
     ).toBeInTheDocument()
   })
 

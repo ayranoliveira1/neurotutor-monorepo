@@ -29,8 +29,9 @@ export function NotificationsPagination({
   return (
     <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-between">
       <p className="text-sm text-muted-foreground">
-        {totalItems} notificação{totalItems !== 1 ? 'ões' : ''} encontrada
-        {totalItems !== 1 ? 's' : ''}
+        {totalItems === 1
+          ? '1 notificação encontrada'
+          : `${totalItems} notificações encontradas`}
       </p>
       <div className="flex items-center gap-2">
         <Button

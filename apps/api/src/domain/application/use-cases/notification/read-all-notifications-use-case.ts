@@ -23,19 +23,12 @@ export class ReadAllNotificationsUseCase {
     const notifications =
       await this.notificationsRepository.findByUserId(userId)
 
-    for (const notification of notifications) {
-      const sendIdIndex = notification.destination.sendIds.findIndex(
-        (id) => id.userId === userId && !id.readAt,
-      )
+    const updated = notifications.filter((notification) =>
+      notification.markAsReadForUser(userId),
+    )
 
-      if (sendIdIndex === -1) continue
-
-      notification.destination.sendIds[sendIdIndex] = {
-        userId,
-        readAt: new Date(),
-      }
-
-      await this.notificationsRepository.save(notification)
+    if (updated.length > 0) {
+      await this.notificationsRepository.saveMany(updated)
     }
 
     return right({ message: 'Todas as notificações foram lidas' })

@@ -7,6 +7,9 @@ import { ThrottlerModule } from '@nestjs/throttler'
 import { GuardsModule } from './infra/http/guards/guards.module'
 import { PaymentModule } from './infra/payment/payment.module'
 import { WebSocketModule } from './infra/web-socket/web-socket.module'
+import { RedisModule } from './infra/redis/redis.module'
+import { QueueModule } from './infra/queue/queue.module'
+import { NotificationQueueModule } from './infra/queue/notification/notification-queue.module'
 import { QuestionsModule } from './infra/questions/questions.module'
 
 @Module({
@@ -26,6 +29,9 @@ import { QuestionsModule } from './infra/questions/questions.module'
     CryptographyModule,
     PaymentModule,
     WebSocketModule,
+    RedisModule,
+    QueueModule,
+    NotificationQueueModule,
     QuestionsModule,
   ],
 })

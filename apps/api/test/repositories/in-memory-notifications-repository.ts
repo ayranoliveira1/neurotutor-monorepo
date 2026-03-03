@@ -11,6 +11,33 @@ export class InMemoryNotificationsRepository
     this.items.push(notification)
   }
 
+  async createWithoutRecipients(notification: Notification): Promise<void> {
+    this.items.push(notification)
+  }
+
+  async createManyRecipients(
+    notificationId: string,
+    recipients: Array<{ userId: string }>,
+  ): Promise<void> {
+    const notification = this.items.find(
+      (n) => n.id.toValue() === notificationId,
+    )
+    if (!notification) return
+
+    const existing = notification.sendIds.map((r) => r.userId)
+    const newRecipients = recipients
+      .filter((r) => !existing.includes(r.userId))
+      .map((r) => ({ userId: r.userId, readAt: undefined }))
+
+    notification.destination = {
+      sendIds: [...notification.sendIds, ...newRecipients],
+    }
+  }
+
+  async findByIdOnly(id: string): Promise<Notification | null> {
+    return this.findById(id)
+  }
+
   async findById(id: string): Promise<Notification | null> {
     const notification = this.items.find((n) => n.id.toValue() === id)
     return notification ?? null
@@ -51,6 +78,12 @@ export class InMemoryNotificationsRepository
     )
     if (index >= 0) {
       this.items[index] = notification
+    }
+  }
+
+  async saveMany(notifications: Notification[]): Promise<void> {
+    for (const notification of notifications) {
+      await this.save(notification)
     }
   }
 }

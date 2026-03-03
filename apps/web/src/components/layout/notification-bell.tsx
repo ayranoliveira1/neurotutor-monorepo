@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { Bell, ArrowLeft, Trash2, Loader2 } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAction } from 'next-safe-action/hooks'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
@@ -18,14 +19,13 @@ import { readAllNotificationsAction } from '@/actions/notifications/read-all-not
 import { deleteNotificationAction } from '@/actions/notifications/delete-notification'
 import type { UserNotification } from '@/actions/notifications/fetch-notifications'
 
-interface NotificationBellProps {
-  userId: string
-}
-
 function formatTimeAgo(dateString: string): string {
   const date = new Date(dateString)
   const now = new Date()
   const diffMs = now.getTime() - date.getTime()
+
+  if (diffMs < 0) return 'agora'
+
   const diffMin = Math.floor(diffMs / 60000)
   const diffHours = Math.floor(diffMs / 3600000)
   const diffDays = Math.floor(diffMs / 86400000)
@@ -37,7 +37,7 @@ function formatTimeAgo(dateString: string): string {
   return date.toLocaleDateString('pt-BR')
 }
 
-export function NotificationBell({ userId }: NotificationBellProps) {
+export function NotificationBell() {
   const [open, setOpen] = useState(false)
   const [view, setView] = useState<'list' | 'detail'>('list')
   const [selectedNotification, setSelectedNotification] =
@@ -53,11 +53,8 @@ export function NotificationBell({ userId }: NotificationBellProps) {
   const notifications = data?.notifications ?? []
 
   const unreadCount = useMemo(() => {
-    return notifications.filter((n) => {
-      const sendId = n.destination.sendIds.find((s) => s.userId === userId)
-      return sendId && !sendId.readAt
-    }).length
-  }, [notifications, userId])
+    return notifications.filter((n) => !n.readAt).length
+  }, [notifications])
 
   useEffect(() => {
     function handleOpenNotifications() {
@@ -75,29 +72,37 @@ export function NotificationBell({ userId }: NotificationBellProps) {
   }
 
   async function handleClickNotification(notification: UserNotification) {
-    const sendId = notification.destination.sendIds.find(
-      (s) => s.userId === userId,
-    )
+    try {
+      if (!notification.readAt) {
+        await readAction.executeAsync({ id: notification.id })
+        invalidateNotifications()
+      }
 
-    if (sendId && !sendId.readAt) {
-      await readAction.executeAsync({ id: notification.id })
-      invalidateNotifications()
+      setSelectedNotification(notification)
+      setView('detail')
+    } catch {
+      toast.error('Erro ao marcar notificação como lida')
     }
-
-    setSelectedNotification(notification)
-    setView('detail')
   }
 
   async function handleReadAll() {
-    await readAllAction.executeAsync({})
-    invalidateNotifications()
+    try {
+      await readAllAction.executeAsync({})
+      invalidateNotifications()
+    } catch {
+      toast.error('Erro ao marcar notificações como lidas')
+    }
   }
 
   async function handleDelete(notificationId: string) {
-    await deleteAction.executeAsync({ id: notificationId })
-    invalidateNotifications()
-    setView('list')
-    setSelectedNotification(null)
+    try {
+      await deleteAction.executeAsync({ id: notificationId })
+      invalidateNotifications()
+      setView('list')
+      setSelectedNotification(null)
+    } catch {
+      toast.error('Erro ao excluir notificação')
+    }
   }
 
   function handleOpenChange(isOpen: boolean) {
@@ -106,13 +111,6 @@ export function NotificationBell({ userId }: NotificationBellProps) {
       setView('list')
       setSelectedNotification(null)
     }
-  }
-
-  function isUnread(notification: UserNotification): boolean {
-    const sendId = notification.destination.sendIds.find(
-      (s) => s.userId === userId,
-    )
-    return !!sendId && !sendId.readAt
   }
 
   return (
@@ -161,15 +159,16 @@ export function NotificationBell({ userId }: NotificationBellProps) {
               ) : (
                 notifications.map((notification) => (
                   <button
+                    type="button"
                     key={notification.id}
                     onClick={() => handleClickNotification(notification)}
                     className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-muted/50"
                   >
-                    {isUnread(notification) && (
+                    {!notification.readAt && (
                       <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
                     )}
                     <div
-                      className={`flex-1 ${!isUnread(notification) ? 'pl-5' : ''}`}
+                      className={`flex-1 ${notification.readAt ? 'pl-5' : ''}`}
                     >
                       <p className="text-sm font-medium leading-tight">
                         {notification.title}
@@ -191,6 +190,7 @@ export function NotificationBell({ userId }: NotificationBellProps) {
                 <Separator />
                 <div className="p-2">
                   <Button
+                    type="button"
                     size="sm"
                     className="w-full text-xs"
                     onClick={handleReadAll}
@@ -215,7 +215,9 @@ export function NotificationBell({ userId }: NotificationBellProps) {
               <Button
                 variant="ghost"
                 size="icon"
+                type="button"
                 className="h-7 w-7"
+                aria-label="Voltar para lista"
                 onClick={() => {
                   setView('list')
                   setSelectedNotification(null)
@@ -234,7 +236,7 @@ export function NotificationBell({ userId }: NotificationBellProps) {
                   {selectedNotification.title}
                 </h4>
                 <p className="mt-1 text-xs text-muted-foreground/70">
-                  {new Date(selectedNotification.createdAt).toLocaleDateString(
+                  {new Date(selectedNotification.createdAt).toLocaleString(
                     'pt-BR',
                     {
                       day: '2-digit',
@@ -257,6 +259,7 @@ export function NotificationBell({ userId }: NotificationBellProps) {
               <Button
                 variant="destructive"
                 size="sm"
+                type="button"
                 className="w-full text-xs"
                 onClick={() =>
                   selectedNotification &&

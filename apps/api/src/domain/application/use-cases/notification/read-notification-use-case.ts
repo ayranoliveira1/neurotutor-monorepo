@@ -40,11 +40,7 @@ export class ReadNotificationUseCase {
       )
     }
 
-    if (
-      !notification.destination.sendIds
-        .map((id) => id.userId)
-        .includes(userId)
-    ) {
+    if (!notification.isRecipient(userId)) {
       return left(
         new NotAllowedError({
           statusCode: 403,
@@ -57,16 +53,11 @@ export class ReadNotificationUseCase {
       )
     }
 
-    const sendIdIndex = notification.destination.sendIds.findIndex(
-      (id) => id.userId === userId,
-    )
+    const wasMarked = notification.markAsReadForUser(userId)
 
-    notification.destination.sendIds[sendIdIndex] = {
-      userId,
-      readAt: new Date(),
+    if (wasMarked) {
+      await this.notificationsRepository.save(notification)
     }
-
-    await this.notificationsRepository.save(notification)
 
     return right({ message: 'Notificação lida com sucesso' })
   }

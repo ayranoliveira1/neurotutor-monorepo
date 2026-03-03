@@ -55,7 +55,9 @@ export function NotificationsPageContent() {
     )
   }
 
-  const data = notificationsQuery.data!
+  const data = notificationsQuery.data
+
+  if (!data) return null
 
   return (
     <div className="space-y-4">

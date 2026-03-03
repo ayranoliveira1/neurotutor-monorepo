@@ -1,5 +1,4 @@
 import { CreateNotificationUseCase } from '@/domain/application/use-cases/admin/notification/create-notification-use-case'
-import { UsersRepository } from '@/domain/application/repositories/users-repository'
 import { Role } from '@/core/enums/enums'
 import { UseCaseErrorProps } from '@/core/errors/use-case-error'
 import { Roles } from '@/infra/http/decorators/roles.decorator'
@@ -11,8 +10,8 @@ import z from 'zod'
 
 const createNotificationBodySchema = z
   .object({
-    title: z.string().min(1),
-    message: z.string().min(1),
+    title: z.string().min(1).max(200),
+    message: z.string().min(1).max(5000),
     sendToAll: z.boolean().optional().default(false),
     sendIds: z.array(z.string().uuid()).optional(),
   })
@@ -27,7 +26,6 @@ type CreateNotificationBody = z.infer<typeof createNotificationBodySchema>
 export class AdminCreateNotificationController {
   constructor(
     private createNotificationUseCase: CreateNotificationUseCase,
-    private usersRepository: UsersRepository,
   ) {}
 
   @Roles(Role.ADMIN)
@@ -41,16 +39,11 @@ export class AdminCreateNotificationController {
       UseCaseErrorProps<string>['errors']
     >
   > {
-    let sendIds = body.sendIds ?? []
-
-    if (body.sendToAll) {
-      sendIds = await this.usersRepository.findAllIds()
-    }
-
     const result = await this.createNotificationUseCase.execute({
       title: body.title,
       message: body.message,
-      sendIds,
+      sendToAll: body.sendToAll,
+      sendIds: body.sendIds ?? [],
     })
 
     return {
