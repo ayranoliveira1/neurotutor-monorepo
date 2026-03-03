@@ -15,7 +15,7 @@ export class FetchUserNotificationsController {
     @CurrentUser() user: { id: string },
   ): Promise<
     HttpResponse<{
-      notifications: ReturnType<typeof NotificationPresenter.toHTTP>[]
+      notifications: ReturnType<typeof NotificationPresenter.toUserHTTP>[]
     }>
   > {
     const result = await this.fetchUserNotificationsUseCase.execute({
@@ -26,8 +26,8 @@ export class FetchUserNotificationsController {
       success: result.isRight(),
       data: result.isRight()
         ? {
-            notifications: result.value.notifications.map(
-              NotificationPresenter.toHTTP,
+            notifications: result.value.notifications.map((n) =>
+              NotificationPresenter.toUserHTTP(n, user.id),
             ),
           }
         : null,
