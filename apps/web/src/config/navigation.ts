@@ -7,6 +7,7 @@ import {
   ClipboardList,
   HelpCircle,
   Target,
+  Timer,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -29,6 +30,7 @@ export const navigationGroups: NavGroup[] = [
       { label: 'Home', href: '/home', icon: Home },
       { label: 'Listas de Exercícios', href: '/listas', icon: ClipboardList },
       { label: 'Planos de Estudo', href: '/planos-estudo', icon: Target },
+      { label: 'Modo Foco', href: '/pomodoro', icon: Timer },
     ],
   },
   {
