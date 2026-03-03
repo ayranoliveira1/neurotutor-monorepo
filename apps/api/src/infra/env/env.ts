@@ -9,6 +9,9 @@ export const envSchema = z.object({
   ASSAAS_WEBHOOK_TOKEN: z.string(),
   QUESTIONS_API_URL: z.string().url(),
   QUESTIONS_API_KEY: z.string().optional().default(''),
+  REDIS_HOST: z.string().optional().default('localhost'),
+  REDIS_PORT: z.coerce.number().optional().default(6379),
+  CORS_ORIGIN: z.string().optional().default('http://localhost:3000'),
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
     .optional()
