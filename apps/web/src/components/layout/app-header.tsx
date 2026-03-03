@@ -49,7 +49,7 @@ export function AppHeader({ user }: AppHeaderProps) {
 
       <div className="flex items-center gap-1">
         <ThemeToggle />
-        <NotificationBell userId={user.id} />
+        <NotificationBell />
         <div className="ml-2">
           <UserDropdown
             name={user.name}
