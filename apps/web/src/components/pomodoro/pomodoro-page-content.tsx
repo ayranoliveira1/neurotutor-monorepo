@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Settings } from 'lucide-react'
-import { usePomodoroPage } from '@/hooks/use-pomodoro-page'
+import { usePomodoroContext } from '@/contexts/pomodoro-context'
 import { PomodoroTimer } from './pomodoro-timer'
 import { PomodoroControls } from './pomodoro-controls'
 import { PomodoroCycleIndicator } from './pomodoro-cycle-indicator'
@@ -49,13 +49,12 @@ export function PomodoroPageContent() {
     weeklyMinutes,
     totalSessions,
     dailyGoal,
-  } = usePomodoroPage()
+  } = usePomodoroContext()
 
   const phaseBadge = PHASE_BADGE_LABELS[state.phase]
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold">Modo Foco</h1>
@@ -76,7 +75,6 @@ export function PomodoroPageContent() {
         </Button>
       </div>
 
-      {/* Stats */}
       <PomodoroStatsCard
         todayPomodoros={todayPomodoros}
         dailyGoal={dailyGoal}
@@ -85,7 +83,6 @@ export function PomodoroPageContent() {
         loading={statsLoading}
       />
 
-      {/* Timer */}
       <Card>
         <CardContent className="flex flex-col items-center gap-6 py-8">
           <PomodoroTimer
@@ -117,7 +114,6 @@ export function PomodoroPageContent() {
         </CardContent>
       </Card>
 
-      {/* Settings Dialog — key resets internal state each time the dialog opens */}
       <PomodoroSettingsDialog
         key={settingsOpen ? 'open' : 'closed'}
         open={settingsOpen}
