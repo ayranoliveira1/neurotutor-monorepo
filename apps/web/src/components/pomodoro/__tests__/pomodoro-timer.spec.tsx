@@ -64,4 +64,42 @@ describe('PomodoroTimer', () => {
     const progressCircle = circles[1]
     expect(progressCircle).toHaveAttribute('stroke-dashoffset')
   })
+
+  it('deve renderizar no modo compact com SVG menor', () => {
+    render(
+      <PomodoroTimer
+        secondsLeft={1500}
+        totalSeconds={1500}
+        phase="WORK"
+        size="compact"
+      />,
+    )
+    const svg = document.querySelector('svg')
+    expect(svg).toHaveAttribute('width', '100')
+    expect(svg).toHaveAttribute('height', '100')
+  })
+
+  it('não deve exibir rótulo da fase no modo compact', () => {
+    render(
+      <PomodoroTimer
+        secondsLeft={1500}
+        totalSeconds={1500}
+        phase="WORK"
+        size="compact"
+      />,
+    )
+    expect(screen.queryByText('Foco')).not.toBeInTheDocument()
+  })
+
+  it('deve exibir rótulo da fase no modo default', () => {
+    render(
+      <PomodoroTimer
+        secondsLeft={1500}
+        totalSeconds={1500}
+        phase="WORK"
+        size="default"
+      />,
+    )
+    expect(screen.getByText('Foco')).toBeInTheDocument()
+  })
 })
