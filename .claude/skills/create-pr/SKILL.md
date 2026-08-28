@@ -1,7 +1,7 @@
 ---
 name: create-pr
 description: Cria um Pull Request da branch atual para develop
-user-invokable: true
+user-invocable: true
 ---
 
 Crie um Pull Request da branch atual para a branch `develop`.

@@ -1,7 +1,7 @@
 ---
 name: commit
 description: Analisa alterações e gera comandos git de commit organizados por funcionalidade
-user-invokable: true
+user-invocable: true
 ---
 
 Analise todas as alterações na branch atual e gere comandos git para o usuário rodar no terminal, dividindo as mudanças em múltiplos commits organizados por funcionalidade.

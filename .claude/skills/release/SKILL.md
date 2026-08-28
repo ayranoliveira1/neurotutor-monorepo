@@ -1,7 +1,7 @@
 ---
 name: release
 description: Cria um PR de release da develop para main com relatório detalhado de contribuições
-user-invokable: true
+user-invocable: true
 ---
 
 Crie um Pull Request de release da branch `develop` para a branch `main`, com um relatório detalhado do que está sendo enviado para produção.
